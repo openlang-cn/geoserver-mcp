@@ -63,6 +63,14 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
 
 Choose the installation method that best suits your needs:
 
+### Installing via Smithery
+
+To install GeoServer MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mahdin75/geoserver-mcp):
+
+```bash
+npx -y @smithery/cli install @mahdin75/geoserver-mcp --client claude
+```
+
 ### 🛠️ Installation (Docker)
 
 The Docker installation is the quickest and most isolated way to run the GeoServer MCP server. It's ideal for:
