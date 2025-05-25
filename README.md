@@ -220,6 +220,7 @@ If you are using Cursor, Create `.cursor/mcp.json`
         "http://localhost:8080/geoserver",
         "--user",
         "admin",
+        "--password",
         "geoserver"
       ]
     }
@@ -239,6 +240,7 @@ If you are using Cursor, Create `.cursor/mcp.json`
         "http://localhost:8080/geoserver",
         "--user",
         "admin",
+        "--password",
         "geoserver"
       ]
     }
@@ -342,6 +344,7 @@ If you are using Cursor, Create `.cursor/mcp.json`
         "http://localhost:8080/geoserver",
         "--user",
         "admin",
+        "--password",
         "geoserver"
       ]
     }
@@ -361,6 +364,7 @@ If you are using Cursor, Create `.cursor/mcp.json`
         "http://localhost:8080/geoserver",
         "--user",
         "admin",
+        "--password",
         "geoserver"
       ]
     }
