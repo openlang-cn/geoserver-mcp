@@ -510,4 +510,9 @@ For support, please Open an [issue](https://github.com/mahdin75/geoserver-mcp/is
   <a href="https://mcp.so/server/Geoserver%20MCP%20Server/mahdin75">
     <img src="https://mcp.so/logo.png" alt="MCP.so Badge" width="150"/>
   </a>
+  <br/><br/><br/>
+
+  [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/mahdin75-geoserver-mcp-badge.png)](https://mseep.ai/app/mahdin75-geoserver-mcp)
 </div>
+
+
