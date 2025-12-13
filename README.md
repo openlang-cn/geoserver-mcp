@@ -1,4 +1,3 @@
-<img src="https://badge.mcpx.dev?type=server" title="MCP Server"/>
 [![PyPI](https://img.shields.io/pypi/v/geoserver-mcp)](https://pypi.org/project/geoserver-mcp/) [![Downloads](https://static.pepy.tech/personalized-badge/geoserver-mcp?period=total&units=international_system&left_color=grey&right_color=blue&left_text=PyPI%20downloads)](https://pepy.tech/project/geoserver-mcp)
 
 # GeoServer MCP Server
