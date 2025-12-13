@@ -1,9 +1,9 @@
+<img src="https://badge.mcpx.dev?type=server" title="MCP Server"/>
 [![PyPI](https://img.shields.io/pypi/v/geoserver-mcp)](https://pypi.org/project/geoserver-mcp/) [![Downloads](https://static.pepy.tech/personalized-badge/geoserver-mcp?period=total&units=international_system&left_color=grey&right_color=blue&left_text=PyPI%20downloads)](https://pepy.tech/project/geoserver-mcp)
 
 # GeoServer MCP Server
 
 <p align="center">
-  <img src="https://badge.mcpx.dev?type=server" title="MCP Server"/>
 A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to the GeoServer REST API, enabling AI assistants to interact with geospatial data and services.
 
 </p>
@@ -12,8 +12,6 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   <img src="docs/geoserver-mcp.png" alt="GeoServer MCP Server Logo" width="400"/>
 </div>
 
-> ![Beta](https://img.shields.io/badge/Version-0.4.0--Beta-green)
->
 > Version 0.5.0 (Beta) is under active development and will be released shortly. We are open to contributions and welcome developers to join us in building this project.
 
 ## 🎥 Demo
