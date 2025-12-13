@@ -12,9 +12,9 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   <img src="docs/geoserver-mcp.png" alt="GeoServer MCP Server Logo" width="400"/>
 </div>
 
-> ![Alpha](https://img.shields.io/badge/Version-0.4.0--Alpha-green)
+> ![Beta](https://img.shields.io/badge/Version-0.4.0--Beta-green)
 >
-> Version 0.5.0 (Alpha) is under active development and will be released shortly. We are open to contributions and welcome developers to join us in building this project.
+> Version 0.5.0 (Beta) is under active development and will be released shortly. We are open to contributions and welcome developers to join us in building this project.
 
 ## 🎥 Demo
 
@@ -30,6 +30,7 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [Docker Installation](#️-installation-docker)
   - [pip Installation](#️-installation-pip)
   - [Development Installation](#️-development-installation)
+- [File Storage and `--storage` Usage](#file-storage-and---storage-usage)
 - [Available Tools](#️-available-tools)
   - [Workspace and Layer Management](#️-workspace-and-layer-management)
   - [Data Operations](#️-data-operations)
@@ -365,6 +366,55 @@ If you are using Cursor, Create `.cursor/mcp.json`
   }
 }
 ```
+
+## File Storage and --storage Usage
+
+GeoServer MCP server supports an optional `--storage` flag to specify a base directory for all file read/write operations, such as uploading shapefiles, GeoTIFFs, or exporting results.
+
+### Overview
+
+- The `--storage` flag sets the root folder for file operations from all data-related tools.
+- You may supply **relative paths** (relative to storage root) or **absolute paths** (bypassing the storage root) as arguments to relevant tools.
+- If `--storage` is not set, paths are resolved as provided by the user (relative to working directory or absolute).
+
+### CLI Example
+
+```sh
+python -m geoserver_mcp.main --storage D:/my/data/dir
+```
+
+This sets `D:/my/data/dir` as the base path for all files.
+
+**Example tool call in Python:**
+
+```python
+# Will read from D:/my/data/dir/roads.zip if --storage is set to D:/my/data/dir
+create_shp_datastore('workspace', 'datastore_name', 'roads.zip')
+```
+
+Absolute paths (e.g. 'C:/input/other.shp') are always used as-is.
+
+### When Running in Docker
+
+If using Docker, ensure the storage directory is mounted as a volume, e.g.:
+
+```sh
+docker run -v D:/my/data:/opt/data ...
+```
+
+Then launch the server with:
+
+```sh
+python -m geoserver_mcp.main --storage /opt/data
+```
+
+### Best Practices
+
+- Use relative paths when interacting with the API/tools as it keeps your setup portable.
+- For remote or container deployment, always ensure your file data is accessible within the container (use Docker volumes if needed).
+- Check tool docstrings for which arguments use the storage system.
+
+The `--storage` system streamlines file management for all users and makes deployment much more flexible!
 
 ## 🛠️ Available Tools
 

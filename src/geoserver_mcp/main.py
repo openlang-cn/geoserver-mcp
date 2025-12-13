@@ -530,19 +530,19 @@ def create_featurestore(workspace: str, name: str, params: dict) -> dict:
 
 @mcp.tool()
 def create_gpkg_datastore(workspace: str, name: str, file_path: str) -> dict:
-    """Create a GeoPackage datastore.
+    """Create a GeoPackage (GPKG) datastore.
     
     Args:
         workspace (str): Workspace name.
         name (str): Datastore name.
-        file_path (str): Path to the .gpkg file.
-    
+        file_path (str): Path to the .gpkg file (relative to --storage if provided)
     Returns:
         dict: Creation result.
     """
     geo = get_geoserver()
     if geo is None:
         raise ValueError("Not connected to GeoServer")
+    file_path = resolve_storage_path(file_path)
     return geo.create_gpkg_datastore(workspace, name, file_path)
 
 @mcp.tool()
@@ -552,14 +552,14 @@ def create_shp_datastore(workspace: str, name: str, file_path: str) -> dict:
     Args:
         workspace (str): Workspace in GeoServer.
         name (str): New datastore name.
-        file_path (str): Path to .shp or zipped shapefile.
-    
+        file_path (str): Path to .shp or zipped shapefile (relative to --storage if provided)
     Returns:
         dict: Creation result.
     """
     geo = get_geoserver()
     if geo is None:
         raise ValueError("Not connected to GeoServer")
+    file_path = resolve_storage_path(file_path)
     return geo.create_shp_datastore(workspace, name, file_path)
 
 @mcp.tool()
@@ -1223,6 +1223,15 @@ def style_outline_only_xml(color: str, width: float, geom_type: str = 'polygon')
     """
     return Style.outline_only_xml(color, width, geom_type)
 
+def resolve_storage_path(path):
+    """Return absolute file path considering storage root if set."""
+    base = os.environ.get("GEOSERVER_STORAGE_PATH", "")
+    if not path:
+        return path
+    if os.path.isabs(path) or not base:
+        return path
+    return os.path.join(base, path)
+
 def main():
     """Main entry point for the GeoServer MCP server."""
     # Parse command-line arguments
@@ -1231,6 +1240,7 @@ def main():
     parser.add_argument("--user", help="GeoServer username")
     parser.add_argument("--password", help="GeoServer password")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
+    parser.add_argument("--storage", help="Base path for file read/write operations (e.g. D:/data or /srv/geoserver-mcp/files)")
     args = parser.parse_args()
     
     # Set environment variables from command-line arguments if provided
@@ -1240,6 +1250,8 @@ def main():
         os.environ["GEOSERVER_USER"] = args.user
     if args.password:
         os.environ["GEOSERVER_PASSWORD"] = args.password
+    if args.storage:
+        os.environ["GEOSERVER_STORAGE_PATH"] = args.storage
     
     # Set logging level
     if args.debug:

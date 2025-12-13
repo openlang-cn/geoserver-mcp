@@ -15,7 +15,7 @@ authors = [
 ]
 keywords = ["mcp", "geoserver", "llm", "geospatial", "ogc", "wfs", "wms"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
@@ -24,7 +24,7 @@ classifiers = [
 ]
 dependencies = [
     "mcp==1.6.0",
-    "geoserver-rest==2.10.0",
+    "geoserver-rest==2.9.1",
 ]
 
 [project.scripts]
