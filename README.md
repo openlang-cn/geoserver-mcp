@@ -1,3 +1,5 @@
+[![PyPI](https://img.shields.io/pypi/v/geoserver-mcp)](https://pypi.org/project/geoserver-mcp/) [![Downloads](https://static.pepy.tech/personalized-badge/geoserver-mcp?period=total&units=international_system&left_color=grey&right_color=blue&left_text=PyPI%20downloads)](https://pepy.tech/project/geoserver-mcp)
+
 # GeoServer MCP Server
 
 <p align="center">
@@ -10,9 +12,9 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   <img src="docs/geoserver-mcp.png" alt="GeoServer MCP Server Logo" width="400"/>
 </div>
 
-> ![Alpha](https://img.shields.io/badge/Version-0.3.0--Alpha-green)
+> ![Alpha](https://img.shields.io/badge/Version-0.4.0--Alpha-green)
 >
-> Version 0.4.0 (Alpha) is under active development and will be released shortly. We are open to contributions and welcome developers to join us in building this project.
+> Version 0.5.0 (Alpha) is under active development and will be released shortly. We are open to contributions and welcome developers to join us in building this project.
 
 ## 🎥 Demo
 
@@ -487,6 +489,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Model Context Protocol](https://github.com/modelcontextprotocol/python-sdk) - The core MCP implementation
 - [GeoServer REST API](https://docs.geoserver.org/latest/en/user/rest/index.html) - Official GeoServer REST documentation
 - [GeoServer REST Python Client](https://github.com/gicait/geoserver-rest) - Python client for GeoServer REST API
+
+## 🌐 See Also: GIS MCP
+
+For broader geospatial data automation and even more GIS-related MCP features, see [GIS MCP by mahdin75](https://github.com/mahdin75/gis-mcp).
 
 ## 📞 Support
 
