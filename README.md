@@ -32,9 +32,16 @@ A Model Context Protocol (MCP) server implementation that connects Large Languag
   - [Development Installation](#️-development-installation)
 - [File Storage and `--storage` Usage](#file-storage-and---storage-usage)
 - [Available Tools](#️-available-tools)
-  - [Workspace and Layer Management](#️-workspace-and-layer-management)
-  - [Data Operations](#️-data-operations)
-  - [Visualization](#️-visualization)
+  - [Resource Endpoints](#️-resource-endpoints)
+  - [Workspace Management](#️-workspace-management)
+  - [Datastore & Coveragestore Management](#️-datastore--coveragestore-management)
+  - [Layer Management](#️-layer-management)
+  - [Layer Group Management](#️-layer-group-management)
+  - [User & User Group Management](#️-user--user-group-management)
+  - [Feature Type & Attribute Management](#️-feature-type--attribute-management)
+  - [Style Management](#️-style-management)
+  - [System & Service Operations](#️-system--service-operations)
+  - [Style XML Utilities](#️-style-xml-utilities)
 - [Client Development](#️-client-development)
   - [List Workspaces](#list-workspaces)
   - [Get Layer Information](#get-layer-information)
@@ -426,32 +433,118 @@ The `--storage` system streamlines file management for all users and makes deplo
 
 ## 🛠️ Available Tools
 
-### 🛠️ Workspace and Layer Management
+This section details all the available tools and resources exposed by the GeoServer MCP server. These tools allow LLMs to interact with GeoServer's REST API for comprehensive geospatial data management.
 
-| Tool               | Description                 |
-| ------------------ | --------------------------- |
-| `list_workspaces`  | Get available workspaces    |
-| `create_workspace` | Create a new workspace      |
-| `get_layer_info`   | Get detailed layer metadata |
-| `list_layers`      | List layers in a workspace  |
-| `create_layer`     | Create a new layer          |
-| `delete_resource`  | Remove resources            |
+### 🌍 Resource Endpoints
 
-### 🛠️ Data Operations
+Resource endpoints provide direct access to GeoServer resources via a URI pattern.
 
-| Tool              | Description                        |
-| ----------------- | ---------------------------------- |
-| `query_features`  | Execute CQL queries on vector data |
-| `update_features` | Modify feature attributes          |
-| `delete_features` | Remove features based on criteria  |
+| Resource URI                                     | Description                            |
+| :----------------------------------------------- | :------------------------------------- |
+| `geoserver://catalog/workspaces`                 | List available workspaces              |
+| `geoserver://catalog/layers/{workspace}/{layer}` | Get information about a specific layer |
+| `geoserver://services/wms/{request}`             | Handle WMS resource requests           |
+| `geoserver://services/wfs/{request}`             | Handle WFS resource requests           |
 
-### 🛠️ Visualization
+### 📦 Workspace Management
 
-| Tool           | Description                     |
-| -------------- | ------------------------------- |
-| `generate_map` | Create styled map images        |
-| `create_style` | Define new SLD styles           |
-| `apply_style`  | Apply existing styles to layers |
+| Tool               | Description                            |
+| :----------------- | :------------------------------------- |
+| `list_workspaces`  | List available workspaces in GeoServer |
+| `create_workspace` | Create a new workspace in GeoServer    |
+
+### 📁 Datastore & Coveragestore Management
+
+| Tool                    | Description                                      |
+| :---------------------- | :----------------------------------------------- |
+| `create_datastore`      | Create a new datastore in the given workspace    |
+| `create_featurestore`   | Create a new featurestore in the given workspace |
+| `create_gpkg_datastore` | Create a GeoPackage (GPKG) datastore             |
+| `create_shp_datastore`  | Create an ESRI Shapefile datastore               |
+| `create_coveragestore`  | Create a new coveragestore in a workspace        |
+| `delete_coveragestore`  | Delete a coveragestore from a workspace          |
+| `get_coveragestore`     | Get details about a single coveragestore         |
+| `get_coveragestores`    | Get all coveragestores for a workspace           |
+| `get_datastore`         | Get a specific datastore by name                 |
+| `get_datastores`        | List all datastores in the given workspace       |
+
+### 🗺️ Layer Management
+
+| Tool              | Description                                                |
+| :---------------- | :--------------------------------------------------------- |
+| `get_layer_info`  | Get detailed information about a layer                     |
+| `list_layers`     | List layers in GeoServer, optionally filtered by workspace |
+| `create_layer`    | Create a new layer in GeoServer                            |
+| `delete_resource` | Delete a resource from GeoServer (generic)                 |
+
+### 🧩 Layer Group Management
+
+| Tool                           | Description                                                           |
+| :----------------------------- | :-------------------------------------------------------------------- |
+| `create_layergroup`            | Create a new layer group with specific layers and (optionally) styles |
+| `get_layergroup`               | Get a layer group from a workspace                                    |
+| `get_layergroups`              | List all layer groups in a workspace                                  |
+| `add_layer_to_layergroup`      | Add a specific layer to a layer group                                 |
+| `remove_layer_from_layergroup` | Remove a layer from a group                                           |
+| `delete_layergroup`            | Delete a layer group from a workspace                                 |
+| `update_layergroup`            | Update a layer group's details and configuration                      |
+
+### 👥 User & User Group Management
+
+| Tool                 | Description                              |
+| :------------------- | :--------------------------------------- |
+| `create_user`        | Create a new user for GeoServer security |
+| `delete_user`        | Delete a user by name                    |
+| `get_all_users`      | List all users in the GeoServer instance |
+| `modify_user`        | Modify an existing user's properties     |
+| `create_usergroup`   | Create a new user group                  |
+| `delete_usergroup`   | Delete a user group                      |
+| `get_all_usergroups` | Return all user groups                   |
+
+### 📊 Feature Type & Attribute Management
+
+| Tool                           | Description                                         |
+| :----------------------------- | :-------------------------------------------------- |
+| `query_features`               | Query features from a vector layer using CQL filter |
+| `publish_featurestore`         | Publish an existing featurestore                    |
+| `publish_featurestore_sqlview` | Publish a featurestore using a SQL view definition  |
+| `edit_featuretype`             | Edit the settings of a feature type in a store      |
+| `get_featuretypes`             | List all feature types in a given store             |
+| `get_feature_attribute`        | Get feature attribute schema/details                |
+
+### 🎨 Style Management
+
+| Tool                              | Description                                     |
+| :-------------------------------- | :---------------------------------------------- |
+| `create_style`                    | Create a new SLD style in GeoServer             |
+| `publish_style`                   | Assign/publish a style to a layer               |
+| `create_catagorized_featurestyle` | Create a categorized style for features         |
+| `create_classified_featurestyle`  | Create a classified style for features          |
+| `create_coveragestyle`            | Create a raster coverage style                  |
+| `create_outline_featurestyle`     | Create a simple outline-only style for features |
+
+### ⚙️ System & Service Operations
+
+| Tool                                      | Description                                                           |
+| :---------------------------------------- | :-------------------------------------------------------------------- |
+| `get_manifest`                            | Get GeoServer manifest metadata/details                               |
+| `get_status`                              | Obtain general server status                                          |
+| `get_system_status`                       | Get system status overview/info from GeoServer                        |
+| `get_version`                             | Fetch GeoServer version string                                        |
+| `reload_geoserver`                        | Reload catalog and config from disk                                   |
+| `reset_geoserver`                         | Reset all GeoServer caches/connections                                |
+| `update_service`                          | Update selected OGC service options                                   |
+| `publish_time_dimension_to_coveragestore` | Add or update a time dimension for a coverage store (for time series) |
+
+### 📝 Style XML Utilities
+
+| Tool                                 | Description                               |
+| :----------------------------------- | :---------------------------------------- |
+| `style_catagorize_xml`               | Generate SLD for categorized vector style |
+| `style_classified_xml`               | Get SLD XML for classified vector style   |
+| `style_coverage_style_colormapentry` | Generate color map entries for raster SLD |
+| `style_coverage_style_xml`           | Generate XML for raster/coverage SLD      |
+| `style_outline_only_xml`             | XML for outline-only style for a geometry |
 
 ## 🛠️ Client Development
 
@@ -568,7 +661,6 @@ For support, please Open an [issue](https://github.com/mahdin75/geoserver-mcp/is
   </a>
   <br/><br/><br/>
 
-  [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/mahdin75-geoserver-mcp-badge.png)](https://mseep.ai/app/mahdin75-geoserver-mcp)
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/mahdin75-geoserver-mcp-badge.png)](https://mseep.ai/app/mahdin75-geoserver-mcp)
+
 </div>
-
-
