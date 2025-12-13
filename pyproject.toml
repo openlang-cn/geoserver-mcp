@@ -25,6 +25,7 @@ classifiers = [
 dependencies = [
     "mcp==1.6.0",
     "geoserver-rest==2.9.1",
+    "seaborn",
 ]
 
 [project.scripts]
