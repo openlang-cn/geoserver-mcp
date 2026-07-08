@@ -11,11 +11,11 @@ import os
 import argparse
 from typing import Dict, List, Any, Optional
 
-# Import from the latest MCP SDK patterns
+# 按最新 MCP SDK 规范导入模块
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-# Parse command-line arguments
+# 解析命令行参数
 parser = argparse.ArgumentParser(description="GeoServer MCP Client Example")
 parser.add_argument("--url", help="GeoServer URL (e.g., http://localhost:8080/geoserver)")
 parser.add_argument("--user", help="GeoServer username")
@@ -25,12 +25,12 @@ parser.add_argument("--server-user", help="Server username argument to pass to t
 parser.add_argument("--server-password", help="Server password argument to pass to the MCP server")
 args = parser.parse_args()
 
-# Configuration - adjust these values to match your environment
+# 配置项——请根据你的环境调整这些值
 GEOSERVER_URL = args.url or os.environ.get("GEOSERVER_URL", "http://localhost:8080/geoserver")
 GEOSERVER_USER = args.user or os.environ.get("GEOSERVER_USER", "admin")
 GEOSERVER_PASSWORD = args.password or os.environ.get("GEOSERVER_PASSWORD", "geoserver")
 
-# Create server parameters for stdio connection
+# 为 stdio 连接创建服务参数
 server_args = []
 if args.server_url:
     server_args.extend(["--url", args.server_url])
@@ -40,9 +40,9 @@ if args.server_password:
     server_args.extend(["--password", args.server_password])
 
 server_params = StdioServerParameters(
-    command="geoserver-mcp-server",  # Command to start the MCP server
-    args=server_args,                # Command line arguments for the server
-    env={                            # Environment variables for the server
+    command="geoserver-mcp-server",  # 启动 MCP 服务的命令
+    args=server_args,                # 服务启动命令行参数
+    env={                            # 服务所需环境变量
         "GEOSERVER_URL": GEOSERVER_URL,
         "GEOSERVER_USER": GEOSERVER_USER,
         "GEOSERVER_PASSWORD": GEOSERVER_PASSWORD,
@@ -50,21 +50,21 @@ server_params = StdioServerParameters(
 )
 
 def print_json(obj: Any) -> None:
-    """Pretty print JSON objects."""
+    """格式化打印 JSON 对象。"""
     print(json.dumps(obj, indent=2))
 
 async def run():
-    """Run the GeoServer MCP client example."""
+    """运行 GeoServer MCP 客户端示例。"""
     print("\n🌍 Starting GeoServer MCP Client Example\n")
     
     async with stdio_client(server_params) as (read, write):
         async with ClientSession(read, write) as session:
-            # Initialize the connection
+            # 初始化连接
             print("Initializing connection to GeoServer MCP server...")
             await session.initialize()
             print("✅ Connection initialized\n")
 
-            # List available resources
+            # 列出可用资源
             print("📚 Listing available resources...")
             resources = await session.list_resources()
             print(f"Found {len(resources.resources)} resources:")
@@ -72,7 +72,7 @@ async def run():
                 print(f"  - {resource.uri}")
             print()
 
-            # List available tools
+            # 列出可用工具
             print("🔧 Listing available tools...")
             tools = await session.list_tools()
             print(f"Found {len(tools.tools)} tools:")
@@ -80,7 +80,7 @@ async def run():
                 print(f"  - {tool.name}: {tool.description}")
             print()
 
-            # Example 1: List workspaces
+            # 示例 1：列出工作区
             print("🗂️  Example 1: Listing workspaces")
             print("--------------------------------")
             try:
@@ -88,13 +88,13 @@ async def run():
                 if workspaces_result.isError:
                     print(f"❌ Error: {workspaces_result.content[0].text}")
                 else:
-                    # The list_workspaces tool returns a list directly, not a JSON string
+                    # list_workspaces 工具直接返回列表，而不是 JSON 字符串
                     workspaces = workspaces_result.content[0].text
                     if isinstance(workspaces, str):
                         try:
                             workspaces = json.loads(workspaces)
                         except json.JSONDecodeError:
-                            # If it's not JSON, it might be a comma-separated list
+                            # 如果不是 JSON，可能是逗号分隔的列表
                             workspaces = [w.strip() for w in workspaces.strip('[]').split(',')]
                     
                     print(f"Found {len(workspaces)} workspaces:")
@@ -105,7 +105,7 @@ async def run():
                 print(f"❌ Error listing workspaces: {e}")
                 print()
 
-            # Example 2: Get layer information
+            # 示例 2：获取图层信息
             print("🗃️  Example 2: Getting layer information")
             print("-------------------------------------")
             try:
@@ -123,7 +123,7 @@ async def run():
                 print(f"❌ Error getting layer info: {e}")
                 print()
 
-            # Example 3: Query features
+            # 示例 3：查询要素
             print("🔍 Example 3: Querying features")
             print("-----------------------------")
             try:
@@ -149,7 +149,7 @@ async def run():
                 print(f"❌ Error querying features: {e}")
                 print()
 
-            # Example 4: Generate a map
+            # 示例 4：生成地图
             print("🗺️  Example 4: Generating a map")
             print("-----------------------------")
             try:
@@ -176,7 +176,7 @@ async def run():
                 print(f"❌ Error generating map: {e}")
                 print()
                 
-            # Example 5: Create a workspace
+            # 示例 5：创建工作区
             print("📁 Example 5: Creating a workspace")
             print("--------------------------------")
             try:
@@ -194,7 +194,7 @@ async def run():
                 print(f"❌ Error creating workspace: {e}")
                 print()
                 
-            # Example 6: Access a catalog resource
+            # 示例 6：访问目录资源
             print("📋 Example 6: Accessing a catalog resource")
             print("----------------------------------------")
             try:

@@ -445,10 +445,13 @@ Resource endpoints provide direct access to GeoServer resources via a URI patter
 
 ### 📦 Workspace Management
 
-| Tool               | Description                            |
-| :----------------- | :------------------------------------- |
-| `list_workspaces`  | List available workspaces in GeoServer |
-| `create_workspace` | Create a new workspace in GeoServer    |
+| Tool                    | Description                                 |
+| :---------------------- | :------------------------------------------ |
+| `list_workspaces`       | List available workspaces in GeoServer      |
+| `create_workspace`      | Create a new workspace in GeoServer         |
+| `get_workspace`         | Get details for a specific workspace        |
+| `get_default_workspace` | Get the current default workspace           |
+| `set_default_workspace` | Set the default workspace for the instance  |
 
 ### 📁 Datastore & Coveragestore Management
 
@@ -464,6 +467,8 @@ Resource endpoints provide direct access to GeoServer resources via a URI patter
 | `get_coveragestores`    | Get all coveragestores for a workspace           |
 | `get_datastore`         | Get a specific datastore by name                 |
 | `get_datastores`        | List all datastores in the given workspace       |
+| `get_featurestore`      | Get a specific featurestore by name              |
+| `delete_featurestore`   | Delete a featurestore from a workspace           |
 
 ### 🗺️ Layer Management
 
@@ -514,6 +519,9 @@ Resource endpoints provide direct access to GeoServer resources via a URI patter
 | Tool                              | Description                                     |
 | :-------------------------------- | :---------------------------------------------- |
 | `create_style`                    | Create a new SLD style in GeoServer             |
+| `upload_style`                    | Upload SLD content or a local SLD file          |
+| `get_style`                       | Get details for a specific style                |
+| `get_styles`                      | List available styles                           |
 | `publish_style`                   | Assign/publish a style to a layer               |
 | `create_catagorized_featurestyle` | Create a categorized style for features         |
 | `create_classified_featurestyle`  | Create a classified style for features          |

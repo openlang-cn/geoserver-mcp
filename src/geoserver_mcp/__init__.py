@@ -1,3 +1,3 @@
-"""GeoServer MCP Server package."""
+"""GeoServer MCP 服务包。"""
 
 __version__ = "0.1.0" 
