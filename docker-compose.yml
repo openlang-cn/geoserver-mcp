@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  geoserver-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: geoserver-mcp
+    restart: unless-stopped
+    ports:
+      - "${MCP_PORT:-8000}:8000"
+    environment:
+      GEOSERVER_URL: "${GEOSERVER_URL}"
+      GEOSERVER_USER: "${GEOSERVER_USER}"
+      GEOSERVER_PASSWORD: "${GEOSERVER_PASSWORD}"
+      GEOSERVER_STORAGE_PATH: "${GEOSERVER_STORAGE_PATH:-}"
+      MCP_TRANSPORT: "${MCP_TRANSPORT:-streamable-http}"
+      MCP_HOST: "${MCP_HOST:-0.0.0.0}"
+      MCP_PORT: "${MCP_PORT:-8000}"
+      MCP_MOUNT_PATH: "${MCP_MOUNT_PATH:-/}"
+      MCP_SSE_PATH: "${MCP_SSE_PATH:-/sse}"
+      MCP_MESSAGE_PATH: "${MCP_MESSAGE_PATH:-/messages/}"
+      MCP_STREAMABLE_HTTP_PATH: "${MCP_STREAMABLE_HTTP_PATH:-/mcp}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), 5).close()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s

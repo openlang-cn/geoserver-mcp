@@ -1,351 +1,226 @@
-[![PyPI](https://img.shields.io/pypi/v/geoserver-mcp)](https://pypi.org/project/geoserver-mcp/) [![Downloads](https://static.pepy.tech/personalized-badge/geoserver-mcp?period=total&units=international_system&left_color=grey&right_color=blue&left_text=PyPI%20downloads)](https://pepy.tech/project/geoserver-mcp)
+[简体中文文档](./docs/README.zh-CN.md)
 
 # GeoServer MCP Server
 
-<p align="center">
-A Model Context Protocol (MCP) server implementation that connects Large Language Models (LLMs) to the GeoServer REST API, enabling AI assistants to interact with geospatial data and services.
+An MCP (Model Context Protocol) server for GeoServer.  
+It wraps the `GeoServer REST API` into MCP tools that can be used by MCP-compatible clients such as Codex, Cursor, and Claude Desktop.
 
-</p>
+---
 
-<div align="center">
-  <img src="docs/geoserver-mcp.png" alt="GeoServer MCP Server Logo" width="400"/>
-</div>
+## Overview
 
-> Version 0.5.0 (Beta) is under active development and will be released shortly. We are open to contributions and welcome developers to join us in building this project.
+- Manage workspaces, datastores, featurestores, coveragestores, layers, and layer groups
+- Query layer details, query features, and generate map access parameters
+- Manage styles, upload SLD files, and generate style XML
+- Read GeoServer status, version, and manifest information
+- Support local `stdio` mode
+- Support remote `streamable-http` / `sse`
+- Support launch via `uvx --from git+...`
+- Support Docker and 1Panel deployment
 
-## 🎥 Demo
+---
 
-<div align="center">
-  <img src="docs/demo/list_workspaces.png" alt="GeoServer MCP Server Demo" width="400"/>
-</div>
+## Project Structure
 
-## 📋 Table of Contents
-
-- [Features](#-features)
-- [Prerequisites](#-prerequisites)
-- [Installation](#️-installation)
-  - [Docker Installation](#️-installation-docker)
-  - [pip Installation](#️-installation-pip)
-  - [Development Installation](#️-development-installation)
-- [File Storage and `--storage` Usage](#file-storage-and---storage-usage)
-- [Available Tools](#️-available-tools)
-  - [Resource Endpoints](#️-resource-endpoints)
-  - [Workspace Management](#️-workspace-management)
-  - [Datastore & Coveragestore Management](#️-datastore--coveragestore-management)
-  - [Layer Management](#️-layer-management)
-  - [Layer Group Management](#️-layer-group-management)
-  - [User & User Group Management](#️-user--user-group-management)
-  - [Feature Type & Attribute Management](#️-feature-type--attribute-management)
-  - [Style Management](#️-style-management)
-  - [System & Service Operations](#️-system--service-operations)
-  - [Style XML Utilities](#️-style-xml-utilities)
-- [Client Development](#️-client-development)
-  - [List Workspaces](#list-workspaces)
-  - [Get Layer Information](#get-layer-information)
-  - [Query Features](#query-features)
-  - [Generate Map](#generate-map)
-- [Planned Features](#-planned-features)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Related Projects](#-related-projects)
-- [Support](#-support)
-- [Badges](#-badges)
-
-## 🚀 Features
-
-- 🔍 Query and manipulate GeoServer workspaces, layers, and styles
-- 🗺️ Execute spatial queries on vector data
-- 🎨 Generate map visualizations
-- 🌐 Access OGC-compliant web services (WMS, WFS)
-- 🛠️ Easy integration with MCP-compatible clients
-
-## 📋 Prerequisites
-
-- Python 3.10 or higher
-- Running GeoServer instance with REST API enabled
-- MCP-compatible client (like Claude Desktop or Cursor)
-- Internet connection for package installation
-
-## 🛠️ Installation
-
-Choose the installation method that best suits your needs:
-
-### Installing via Smithery
-
-To install GeoServer MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mahdin75/geoserver-mcp):
-
-```bash
-npx -y @smithery/cli install @mahdin75/geoserver-mcp --client claude
+```text
+src/geoserver_mcp/
+├─ main.py          # CLI entrypoint
+├─ server.py        # FastMCP server factory and registration
+├─ connection.py    # GeoServer connection creation
+├─ client.py        # Compatibility wrapper for geoserver-rest
+├─ resources.py     # MCP resource endpoints
+├─ utils.py         # Shared utility functions
+└─ tools/
+   ├─ catalog.py    # workspaces, layers, stores, layer groups, feature types
+   ├─ styles.py     # styles and SLD XML helpers
+   ├─ security.py   # users and groups
+   └─ system.py     # status, version, service config
 ```
 
-### 🛠️ Installation (Docker)
+Other important files:
 
-The Docker installation is the quickest and most isolated way to run the GeoServer MCP server. It's ideal for:
+- `examples/client.py`: example client
+- `tests/`: basic tests
+- `Dockerfile`: container image
+- `docker-compose.yml`: remote deployment / 1Panel Compose example
+- `.env.example`: environment template
 
-- Quick testing and evaluation
-- Production deployments
-- Environments where you want to avoid Python dependencies
-- Consistent deployment across different systems
+---
 
-1. Run geoserver-mcp:
+## Requirements
 
-```bash
-docker pull mahdin75/geoserver-mcp
-docker run -d mahdin75/geoserver-mcp
-```
+- Python `3.10+`
+- A reachable GeoServer instance
+- GeoServer REST API enabled
 
-2. Configure the clients:
+Recommended dependency versions:
 
-If you are using Claude Desktop, edit `claude_desktop_config.json`
-If you are using Cursor, Create `.cursor/mcp.json`
+- `mcp==1.28.1`
+- `geoserver-rest==2.10.0`
 
-```json
-{
-  "mcpServers": {
-    "geoserver-mcp": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "GEOSERVER_URL=http://localhost:8080/geoserver",
-        "-e",
-        "GEOSERVER_USER=admin",
-        "-e",
-        "GEOSERVER_PASSWORD=geoserver",
-        "-p",
-        "8080:8080",
-        "mahdin75/geoserver-mcp"
-      ]
-    }
-  }
-}
-```
+---
 
-### 🛠️ Installation (pip)
+## Installation
 
-The pip installation is recommended for most users who want to run the server directly on their system. This method is best for:
+### Which option should I use?
 
-- Regular users who want to run the server locally
-- Systems where you have Python 3.10+ installed
-- Users who want to customize the server configuration
-- Development and testing purposes
+Choose by scenario:
 
-1. Install uv package manager.
+- **Local development / debugging**: use `uv`, no Docker required
+- **Temporary usage / no local install**: use `uvx --from git+...`
+- **Long-running server / remote MCP endpoint**: use Docker
+- **1Panel managed remote deployment**: use `docker-compose.yml`
+- **1Panel imported MCP configuration**: use `uvx` import mode
 
-```bash
-pip install uv
-```
+In short:
 
-2. Create the Virtual Environment (Python 3.10+):
+- **Local development**: `uv`
+- **Temporary launch**: `uvx`
+- **Remote deployment**: Docker
+- **Panel management**: 1Panel
 
-**Linux/Mac:**
+### Option 1: Local development / local run
 
 ```bash
 uv venv --python=3.10
 ```
 
-**Windows PowerShell:**
-
-```bash
-uv venv --python=3.10
-```
-
-3. Install the package using pip:
-
-```bash
-uv pip install geoserver-mcp
-```
-
-4. Configure GeoServer connection:
-
-**Linux/Mac:**
-
-```bash
-export GEOSERVER_URL="http://localhost:8080/geoserver"
-export GEOSERVER_USER="admin"
-export GEOSERVER_PASSWORD="geoserver"
-```
-
-**Windows PowerShell:**
+Windows PowerShell:
 
 ```powershell
-$env:GEOSERVER_URL="http://localhost:8080/geoserver"
-$env:GEOSERVER_USER="admin"
-$env:GEOSERVER_PASSWORD="geoserver"
+.\.venv\Scripts\Activate.ps1
 ```
 
-5. Start the server:
-
-If you are going to use Claude desktop you don't need this step. For cursor or your own custom client you should run the following code.
-
-**Linux:**
+Linux / macOS:
 
 ```bash
 source .venv/bin/activate
-
-geoserver-mcp
 ```
 
-or
-
-```bash
-source .venv/bin/activate
-
-geoserver-mcp --url http://localhost:8080/geoserver --user admin --password geoserver --debug
-```
-
-**Windows PowerShell:**
-
-```bash
-.\.venv\Scripts\activate
-geoserver-mcp
-```
-
-or
-
-```bash
-.\.venv\Scripts\activate
-geoserver-mcp --url http://localhost:8080/geoserver --user admin --password geoserver --debug
-```
-
-6. Configure Clients:
-
-If you are using Claude Desktop, edit `claude_desktop_config.json`
-If you are using Cursor, Create `.cursor/mcp.json`
-
-**Windows:**
-
-```json
-{
-  "mcpServers": {
-    "geoserver-mcp": {
-      "command": "C:\\path\\to\\geoserver-mcp\\.venv\\Scripts\\geoserver-mcp",
-      "args": [
-        "--url",
-        "http://localhost:8080/geoserver",
-        "--user",
-        "admin",
-        "--password",
-        "geoserver"
-      ]
-    }
-  }
-}
-```
-
-**Linux:**
-
-```json
-{
-  "mcpServers": {
-    "geoserver-mcp": {
-      "command": "/path/to/geoserver-mcp/.venv/bin/geoserver-mcp",
-      "args": [
-        "--url",
-        "http://localhost:8080/geoserver",
-        "--user",
-        "admin",
-        "--password",
-        "geoserver"
-      ]
-    }
-  }
-}
-```
-
-### 🛠️ Development installation
-
-The development installation is designed for contributors and developers who want to modify the codebase. This method is suitable for:
-
-- Developers contributing to the project
-- Users who need to modify the source code
-- Testing new features
-- Debugging and development purposes
-
-1. Install uv package manager.
-
-```bash
-pip install uv
-```
-
-2. Create the Virtual Environment (Python 3.10+):
-
-```bash
-uv venv --python=3.10
-```
-
-3. Install the package using pip:
+Install the project:
 
 ```bash
 uv pip install -e .
 ```
 
-4. Configure GeoServer connection:
-
-**Linux/Mac:**
+Install dev dependencies:
 
 ```bash
-export GEOSERVER_URL="http://localhost:8080/geoserver"
-export GEOSERVER_USER="admin"
-export GEOSERVER_PASSWORD="geoserver"
+uv pip install -e ".[dev]"
 ```
 
-**Windows PowerShell:**
-
-```powershell
-$env:GEOSERVER_URL="http://localhost:8080/geoserver"
-$env:GEOSERVER_USER="admin"
-$env:GEOSERVER_PASSWORD="geoserver"
-```
-
-5. Start the server:
-
-If you are going to use Claude desktop you don't need this step. For cursor or your own custom client you should run the following code.
-
-**Linux:**
+### Option 2: Run directly from GitHub with uvx
 
 ```bash
-source .venv/bin/activate
-
-geoserver-mcp
+uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp --help
 ```
 
-or
+With GeoServer connection:
 
 ```bash
-source .venv/bin/activate
-
-geoserver-mcp --url http://localhost:8080/geoserver --user admin --password geoserver --debug
+uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp \
+  --url http://localhost:8080/geoserver \
+  --user admin \
+  --password geoserver
 ```
 
-**Windows PowerShell:**
+### Option 3: Docker
+
+Docker is mainly for:
+
+- server deployment
+- remote MCP services
+- 1Panel / Compose management
+- avoiding manual Python runtime setup
+
+Docker is **not required** for local development or local debugging.
+
+Build the image:
 
 ```bash
-.\.venv\Scripts\activate
-geoserver-mcp
+docker build -t geoserver-mcp .
 ```
 
-or
+Run the container:
 
 ```bash
-.\.venv\Scripts\activate
-geoserver-mcp --url http://localhost:8080/geoserver --user admin --password geoserver --debug
+docker run --rm -p 8000:8000 \
+  -e GEOSERVER_URL=http://host.docker.internal:8080/geoserver \
+  -e GEOSERVER_USER=admin \
+  -e GEOSERVER_PASSWORD=geoserver \
+  geoserver-mcp
 ```
 
-6. Configure Clients:
+---
 
-If you are using Claude Desktop, edit `claude_desktop_config.json`
-If you are using Cursor, Create `.cursor/mcp.json`
+## Startup Modes
 
-**Windows:**
+### 1) Local stdio mode
+
+```bash
+geoserver-mcp --url http://localhost:8080/geoserver --user admin --password geoserver
+```
+
+Or:
+
+```bash
+python -m geoserver_mcp.main --url http://localhost:8080/geoserver --user admin --password geoserver
+```
+
+### 2) Remote Streamable HTTP mode
+
+```bash
+geoserver-mcp \
+  --transport streamable-http \
+  --host 0.0.0.0 \
+  --port 8000
+```
+
+Default remote endpoint:
+
+```text
+http://<host>:8000/mcp
+```
+
+### 3) Remote SSE mode
+
+```bash
+geoserver-mcp \
+  --transport sse \
+  --host 0.0.0.0 \
+  --port 8000
+```
+
+Default paths:
+
+- SSE: `/sse`
+- Message: `/messages/`
+
+### Common CLI arguments
+
+- `--url`: GeoServer URL
+- `--user`: GeoServer username
+- `--password`: GeoServer password
+- `--storage`: file storage root
+- `--transport`: `stdio` / `sse` / `streamable-http`
+- `--host`: bind host
+- `--port`: bind port
+- `--mount-path`: HTTP mount root
+- `--sse-path`: SSE path
+- `--message-path`: SSE message path
+- `--streamable-http-path`: Streamable HTTP path
+
+---
+
+## Client Configuration Examples
+
+### Local command mode
 
 ```json
 {
   "mcpServers": {
     "geoserver-mcp": {
-      "command": "C:\\path\\to\\geoserver-mcp\\.venv\\Scripts\\geoserver-mcp",
+      "command": "geoserver-mcp",
       "args": [
         "--url",
         "http://localhost:8080/geoserver",
@@ -359,313 +234,414 @@ If you are using Cursor, Create `.cursor/mcp.json`
 }
 ```
 
-**Linux:**
+### Remote Streamable HTTP mode
 
 ```json
 {
   "mcpServers": {
     "geoserver-mcp": {
-      "command": "/path/to/geoserver-mcp/.venv/bin/geoserver-mcp",
-      "args": [
-        "--url",
-        "http://localhost:8080/geoserver",
-        "--user",
-        "admin",
-        "--password",
-        "geoserver"
-      ]
+      "type": "streamable-http",
+      "url": "https://your-domain.com/mcp"
     }
   }
 }
 ```
 
-## File Storage and --storage Usage
+### Remote SSE mode
 
-GeoServer MCP server supports an optional `--storage` flag to specify a base directory for all file read/write operations, such as uploading shapefiles, GeoTIFFs, or exporting results.
-
-### Overview
-
-- The `--storage` flag sets the root folder for file operations from all data-related tools.
-- You may supply **relative paths** (relative to storage root) or **absolute paths** (bypassing the storage root) as arguments to relevant tools.
-- If `--storage` is not set, paths are resolved as provided by the user (relative to working directory or absolute).
-
-### CLI Example
-
-```sh
-python -m geoserver_mcp.main --storage D:/my/data/dir
-```
-
-This sets `D:/my/data/dir` as the base path for all files.
-
-**Example tool call in Python:**
-
-```python
-# Will read from D:/my/data/dir/roads.zip if --storage is set to D:/my/data/dir
-create_shp_datastore('workspace', 'datastore_name', 'roads.zip')
-```
-
-Absolute paths (e.g. 'C:/input/other.shp') are always used as-is.
-
-### When Running in Docker
-
-If using Docker, ensure the storage directory is mounted as a volume, e.g.:
-
-```sh
-docker run -v D:/my/data:/opt/data ...
-```
-
-Then launch the server with:
-
-```sh
-python -m geoserver_mcp.main --storage /opt/data
-```
-
-### Best Practices
-
-- Use relative paths when interacting with the API/tools as it keeps your setup portable.
-- For remote or container deployment, always ensure your file data is accessible within the container (use Docker volumes if needed).
-- Check tool docstrings for which arguments use the storage system.
-
-The `--storage` system streamlines file management for all users and makes deployment much more flexible!
-
-## 🛠️ Available Tools
-
-This section details all the available tools and resources exposed by the GeoServer MCP server. These tools allow LLMs to interact with GeoServer's REST API for comprehensive geospatial data management.
-
-### 🌍 Resource Endpoints
-
-Resource endpoints provide direct access to GeoServer resources via a URI pattern.
-
-| Resource URI                                     | Description                            |
-| :----------------------------------------------- | :------------------------------------- |
-| `geoserver://catalog/workspaces`                 | List available workspaces              |
-| `geoserver://catalog/layers/{workspace}/{layer}` | Get information about a specific layer |
-| `geoserver://services/wms/{request}`             | Handle WMS resource requests           |
-| `geoserver://services/wfs/{request}`             | Handle WFS resource requests           |
-
-### 📦 Workspace Management
-
-| Tool                    | Description                                 |
-| :---------------------- | :------------------------------------------ |
-| `list_workspaces`       | List available workspaces in GeoServer      |
-| `create_workspace`      | Create a new workspace in GeoServer         |
-| `get_workspace`         | Get details for a specific workspace        |
-| `get_default_workspace` | Get the current default workspace           |
-| `set_default_workspace` | Set the default workspace for the instance  |
-
-### 📁 Datastore & Coveragestore Management
-
-| Tool                    | Description                                      |
-| :---------------------- | :----------------------------------------------- |
-| `create_datastore`      | Create a new datastore in the given workspace    |
-| `create_featurestore`   | Create a new featurestore in the given workspace |
-| `create_gpkg_datastore` | Create a GeoPackage (GPKG) datastore             |
-| `create_shp_datastore`  | Create an ESRI Shapefile datastore               |
-| `create_coveragestore`  | Create a new coveragestore in a workspace        |
-| `delete_coveragestore`  | Delete a coveragestore from a workspace          |
-| `get_coveragestore`     | Get details about a single coveragestore         |
-| `get_coveragestores`    | Get all coveragestores for a workspace           |
-| `get_datastore`         | Get a specific datastore by name                 |
-| `get_datastores`        | List all datastores in the given workspace       |
-| `get_featurestore`      | Get a specific featurestore by name              |
-| `delete_featurestore`   | Delete a featurestore from a workspace           |
-
-### 🗺️ Layer Management
-
-| Tool              | Description                                                |
-| :---------------- | :--------------------------------------------------------- |
-| `get_layer_info`  | Get detailed information about a layer                     |
-| `list_layers`     | List layers in GeoServer, optionally filtered by workspace |
-| `create_layer`    | Create a new layer in GeoServer                            |
-| `delete_resource` | Delete a resource from GeoServer (generic)                 |
-
-### 🧩 Layer Group Management
-
-| Tool                           | Description                                                           |
-| :----------------------------- | :-------------------------------------------------------------------- |
-| `create_layergroup`            | Create a new layer group with specific layers and (optionally) styles |
-| `get_layergroup`               | Get a layer group from a workspace                                    |
-| `get_layergroups`              | List all layer groups in a workspace                                  |
-| `add_layer_to_layergroup`      | Add a specific layer to a layer group                                 |
-| `remove_layer_from_layergroup` | Remove a layer from a group                                           |
-| `delete_layergroup`            | Delete a layer group from a workspace                                 |
-| `update_layergroup`            | Update a layer group's details and configuration                      |
-
-### 👥 User & User Group Management
-
-| Tool                 | Description                              |
-| :------------------- | :--------------------------------------- |
-| `create_user`        | Create a new user for GeoServer security |
-| `delete_user`        | Delete a user by name                    |
-| `get_all_users`      | List all users in the GeoServer instance |
-| `modify_user`        | Modify an existing user's properties     |
-| `create_usergroup`   | Create a new user group                  |
-| `delete_usergroup`   | Delete a user group                      |
-| `get_all_usergroups` | Return all user groups                   |
-
-### 📊 Feature Type & Attribute Management
-
-| Tool                           | Description                                         |
-| :----------------------------- | :-------------------------------------------------- |
-| `query_features`               | Query features from a vector layer using CQL filter |
-| `publish_featurestore`         | Publish an existing featurestore                    |
-| `publish_featurestore_sqlview` | Publish a featurestore using a SQL view definition  |
-| `edit_featuretype`             | Edit the settings of a feature type in a store      |
-| `get_featuretypes`             | List all feature types in a given store             |
-| `get_feature_attribute`        | Get feature attribute schema/details                |
-
-### 🎨 Style Management
-
-| Tool                              | Description                                     |
-| :-------------------------------- | :---------------------------------------------- |
-| `create_style`                    | Create a new SLD style in GeoServer             |
-| `upload_style`                    | Upload SLD content or a local SLD file          |
-| `get_style`                       | Get details for a specific style                |
-| `get_styles`                      | List available styles                           |
-| `publish_style`                   | Assign/publish a style to a layer               |
-| `create_catagorized_featurestyle` | Create a categorized style for features         |
-| `create_classified_featurestyle`  | Create a classified style for features          |
-| `create_coveragestyle`            | Create a raster coverage style                  |
-| `create_outline_featurestyle`     | Create a simple outline-only style for features |
-
-### ⚙️ System & Service Operations
-
-| Tool                                      | Description                                                           |
-| :---------------------------------------- | :-------------------------------------------------------------------- |
-| `get_manifest`                            | Get GeoServer manifest metadata/details                               |
-| `get_status`                              | Obtain general server status                                          |
-| `get_system_status`                       | Get system status overview/info from GeoServer                        |
-| `get_version`                             | Fetch GeoServer version string                                        |
-| `reload_geoserver`                        | Reload catalog and config from disk                                   |
-| `reset_geoserver`                         | Reset all GeoServer caches/connections                                |
-| `update_service`                          | Update selected OGC service options                                   |
-| `publish_time_dimension_to_coveragestore` | Add or update a time dimension for a coverage store (for time series) |
-
-### 📝 Style XML Utilities
-
-| Tool                                 | Description                               |
-| :----------------------------------- | :---------------------------------------- |
-| `style_catagorize_xml`               | Generate SLD for categorized vector style |
-| `style_classified_xml`               | Get SLD XML for classified vector style   |
-| `style_coverage_style_colormapentry` | Generate color map entries for raster SLD |
-| `style_coverage_style_xml`           | Generate XML for raster/coverage SLD      |
-| `style_outline_only_xml`             | XML for outline-only style for a geometry |
-
-## 🛠️ Client Development
-
-If you're planning to develop your own client to interact with the GeoServer MCP server, you can find inspiration in the example client implementation at `examples/client.py`. This example demonstrates:
-
-- How to establish a connection with the MCP server
-- How to send requests and handle responses
-- Basic error handling and connection management
-- Example usage of various tools and operations
-
-The example client serves as a good starting point for understanding the protocol and implementing your own client applications.
-
-Also, here is the example usgage:
-
-### List Workspaces
-
-```
-
-Tool: list_workspaces
-Parameters: {}
-Response: ["default", "demo", "topp", "tiger", "sf"]
-
-```
-
-### Get Layer Information
-
-```
-
-Tool: get_layer_info
-Parameters: {
-"workspace": "topp",
-"layer": "states"
+```json
+{
+  "mcpServers": {
+    "geoserver-mcp": {
+      "type": "sse",
+      "url": "https://your-domain.com/geoserver-mcp"
+    }
+  }
 }
-
 ```
 
-### Query Features
+---
 
+## 1Panel Usage
+
+Two recommended approaches:
+
+1. **Remote deployment mode**: deploy this project as a remote MCP service and connect directly by URL
+2. **Imported MCP config mode**: let 1Panel launch the project with `uvx`, then expose `sse` or `streamableHttp`
+
+### Option A: 1Panel remote deployment
+
+Use the repository `docker-compose.yml`.
+
+1. Copy the template:
+
+```bash
+cp .env.example .env
 ```
 
-Tool: query_features
-Parameters: {
-"workspace": "topp",
-"layer": "states",
-"filter": "PERSONS > 10000000",
-"properties": ["STATE_NAME", "PERSONS"]
+2. Edit `.env`:
+
+```env
+GEOSERVER_URL=http://your-geoserver:8080/geoserver
+GEOSERVER_USER=admin
+GEOSERVER_PASSWORD=geoserver
+MCP_TRANSPORT=streamable-http
+MCP_PORT=8000
+MCP_STREAMABLE_HTTP_PATH=/mcp
+```
+
+3. Import `docker-compose.yml` into 1Panel
+4. Start the service
+5. Add a website / reverse proxy in 1Panel:
+
+```text
+https://your-domain.com/mcp -> http://127.0.0.1:8000/mcp
+```
+
+Codex config:
+
+```json
+{
+  "mcpServers": {
+    "geoserver-mcp-remote": {
+      "type": "streamable-http",
+      "url": "https://your-domain.com/mcp"
+    }
+  }
 }
-
 ```
 
-### Generate Map
+### Option B: 1Panel imported configuration
 
-```
+If your 1Panel supports importing standard `mcpServers` JSON, use this template.
 
-Tool: generate_map
-Parameters: {
-"layers": ["topp:states"],
-"styles": ["population"],
-"bbox": [-124.73, 24.96, -66.97, 49.37],
-"width": 800,
-"height": 600,
-"format": "png"
+#### Import JSON template
+
+```json
+{
+  "mcpServers": {
+    "geoserver-mcp": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/openlang-cn/geoserver-mcp.git",
+        "geoserver-mcp"
+      ],
+      "env": {
+        "GEOSERVER_URL": "http://your-geoserver:8080/geoserver",
+        "GEOSERVER_USER": "admin",
+        "GEOSERVER_PASSWORD": "geoserver"
+      }
+    }
+  }
 }
-
 ```
 
-## 🔮 Planned Features
+#### Automatically filled by import
 
-- [ ] Coverage and raster data management
-- [ ] Security and access control
-- [ ] Advanced styling capabilities
-- [ ] WPS processing operations
-- [ ] GeoWebCache integration
+- `command`
+- `args`
+- `env`
 
-## 🤝 Contributing
+#### Still needs manual input in 1Panel
 
-We welcome contributions! Here's how you can help:
+- external access path
+- output type
+- SSE path
+- image
+- container name
+- port
+- mounts
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+#### Notes
 
-Please ensure your PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
+- Keep the launcher in default `stdio` mode
+- Do not add `--transport streamable-http` to the imported command
+- Let 1Panel handle the conversion to `sse` or `streamableHttp`
 
-## 📄 License
+---
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Complete 1Panel Templates
 
-## 🔗 Related Projects
+### Template 1: `uvx + sse`
 
-- [Model Context Protocol](https://github.com/modelcontextprotocol/python-sdk) - The core MCP implementation
-- [GeoServer REST API](https://docs.geoserver.org/latest/en/user/rest/index.html) - Official GeoServer REST documentation
-- [GeoServer REST Python Client](https://github.com/gicait/geoserver-rest) - Python client for GeoServer REST API
+#### Import JSON
 
-## 🌐 See Also: GIS MCP
+```json
+{
+  "mcpServers": {
+    "geoserver-mcp": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/openlang-cn/geoserver-mcp.git",
+        "geoserver-mcp"
+      ],
+      "env": {
+        "GEOSERVER_URL": "http://your-geoserver:8080/geoserver",
+        "GEOSERVER_USER": "admin",
+        "GEOSERVER_PASSWORD": "geoserver"
+      }
+    }
+  }
+}
+```
 
-For broader geospatial data automation and even more GIS-related MCP features, see [GIS MCP by mahdin75](https://github.com/mahdin75/gis-mcp).
+#### Manual 1Panel fields
 
-## 📞 Support
+- Name: `geoserver-mcp`
+- Type: `适合 uvx 启动的 mcp`
+- Start command: `uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp`
+- External access path: `http://<your-server-ip>:8084`
+- Output type: `sse`
+- SSE path: `/geoserver-mcp`
+- Image: `supercorp/supergateway:uvx`
+- Container name: `geoserver-mcp`
+- Port: `8084`
 
-For support, please Open an [issue](https://github.com/mahdin75/geoserver-mcp/issues)
+#### Environment variables
 
-## 🏆 Badges
+```text
+GEOSERVER_URL=http://your-geoserver:8080/geoserver
+GEOSERVER_USER=admin
+GEOSERVER_PASSWORD=geoserver
+GEOSERVER_STORAGE_PATH=/data
+```
 
-<div align="center">
-  <a href="https://glama.ai/mcp/servers/@mahdin75/geoserver-mcp">
-    <img width="380" height="200" src="https://glama.ai/mcp/servers/@mahdin75/geoserver-mcp/badge" alt="GeoServer Server MCP server" />
-  </a>
-  <br/><br/><br/>
-  <a href="https://mcp.so/server/Geoserver%20MCP%20Server/mahdin75">
-    <img src="https://mcp.so/logo.png" alt="MCP.so Badge" width="150"/>
-  </a>
-  <br/><br/><br/>
+#### Optional mount
 
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/mahdin75-geoserver-mcp-badge.png)](https://mseep.ai/app/mahdin75-geoserver-mcp)
+```text
+Host path: /your/local/data
+Container path: /data
+```
 
-</div>
+#### Codex config
+
+```json
+{
+  "mcpServers": {
+    "geoserver-mcp": {
+      "type": "sse",
+      "url": "http://<your-server-ip>:8084/geoserver-mcp"
+    }
+  }
+}
+```
+
+### Template 2: `uvx + streamableHttp`
+
+#### Import JSON
+
+```json
+{
+  "mcpServers": {
+    "geoserver-mcp": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/openlang-cn/geoserver-mcp.git",
+        "geoserver-mcp"
+      ],
+      "env": {
+        "GEOSERVER_URL": "http://your-geoserver:8080/geoserver",
+        "GEOSERVER_USER": "admin",
+        "GEOSERVER_PASSWORD": "geoserver"
+      }
+    }
+  }
+}
+```
+
+#### Manual 1Panel fields
+
+- Name: `geoserver-mcp`
+- Type: `适合 uvx 启动的 mcp`
+- Start command: `uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp`
+- External access path: `http://<your-server-ip>:8084`
+- Output type: `streamableHttp`
+- SSE path: `/geoserver-mcp`
+- Image: `supercorp/supergateway:uvx`
+- Container name: `geoserver-mcp`
+- Port: `8084`
+
+#### Environment variables
+
+```text
+GEOSERVER_URL=http://your-geoserver:8080/geoserver
+GEOSERVER_USER=admin
+GEOSERVER_PASSWORD=geoserver
+GEOSERVER_STORAGE_PATH=/data
+```
+
+#### Optional mount
+
+```text
+Host path: /your/local/data
+Container path: /data
+```
+
+#### Codex config
+
+```json
+{
+  "mcpServers": {
+    "geoserver-mcp": {
+      "type": "streamable-http",
+      "url": "http://<your-server-ip>:8084/geoserver-mcp"
+    }
+  }
+}
+```
+
+### Which one should I choose?
+
+- Try `uvx + streamableHttp` first
+- If your 1Panel build does not behave well with `streamableHttp`, fall back to `uvx + sse`
+
+---
+
+## File Storage and `--storage`
+
+If you want MCP tools to read local files such as Shapefiles, GeoPackages, or SLD files, use a storage root:
+
+```bash
+python -m geoserver_mcp.main --storage D:/data
+```
+
+Relative paths will be resolved under that root.
+
+Examples:
+
+```text
+roads.zip -> D:/data/roads.zip
+style/demo.sld -> D:/data/style/demo.sld
+```
+
+For Docker / 1Panel:
+
+- `GEOSERVER_STORAGE_PATH` should point to the container path
+- the matching host directory must be mounted into the container
+
+---
+
+## Available Tools
+
+### Resource Endpoints
+
+- `geoserver://catalog/workspaces`
+- `geoserver://catalog/layers/{workspace}/{layer}`
+- `geoserver://services/wms/{request}`
+- `geoserver://services/wfs/{request}`
+
+### Workspaces / Layers / Stores
+
+- `list_workspaces`
+- `create_workspace`
+- `get_workspace`
+- `get_default_workspace`
+- `set_default_workspace`
+- `get_layer_info`
+- `list_layers`
+- `create_layer`
+- `delete_resource`
+- `query_features`
+- `generate_map`
+- `create_datastore`
+- `create_featurestore`
+- `create_gpkg_datastore`
+- `create_shp_datastore`
+- `create_coveragestore`
+- `delete_coveragestore`
+- `get_coveragestore`
+- `get_coveragestores`
+- `get_datastore`
+- `get_datastores`
+- `get_featurestore`
+- `delete_featurestore`
+
+### Layer Groups
+
+- `create_layergroup`
+- `get_layergroup`
+- `get_layergroups`
+- `add_layer_to_layergroup`
+- `remove_layer_from_layergroup`
+- `delete_layergroup`
+- `update_layergroup`
+
+### Feature Types
+
+- `publish_featurestore`
+- `publish_featurestore_sqlview`
+- `edit_featuretype`
+- `get_featuretypes`
+- `get_feature_attribute`
+
+### Styles
+
+- `create_style`
+- `upload_style`
+- `get_style`
+- `get_styles`
+- `publish_style`
+- `create_catagorized_featurestyle`
+- `create_classified_featurestyle`
+- `create_coveragestyle`
+- `create_outline_featurestyle`
+
+### Style XML Helpers
+
+- `style_catagorize_xml`
+- `style_classified_xml`
+- `style_coverage_style_colormapentry`
+- `style_coverage_style_xml`
+- `style_outline_only_xml`
+
+### Security
+
+- `create_user`
+- `delete_user`
+- `get_all_users`
+- `modify_user`
+- `create_usergroup`
+- `delete_usergroup`
+- `get_all_usergroups`
+
+### System
+
+- `get_manifest`
+- `get_status`
+- `get_system_status`
+- `get_version`
+- `reload_geoserver`
+- `reset_geoserver`
+- `update_service`
+- `publish_time_dimension_to_coveragestore`
+
+---
+
+## Development
+
+### Run tests
+
+```bash
+pytest tests -q
+```
+
+### Syntax check
+
+```bash
+python -m py_compile src/geoserver_mcp/main.py
+```
+
+### Use a specific branch with uvx
+
+```bash
+uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git@codex/geoserver-mcp-light-engineering geoserver-mcp
+```
+
+---
+
+## License
+
+MIT

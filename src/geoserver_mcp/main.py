@@ -7,7 +7,7 @@ import logging
 import os
 import sys
 
-from .server import mcp
+from .server import create_mcp_server
 
 logger = logging.getLogger("geoserver-mcp")
 
@@ -20,6 +20,18 @@ def main() -> None:
     parser.add_argument("--password", help="GeoServer 密码")
     parser.add_argument("--debug", action="store_true", help="启用调试日志")
     parser.add_argument("--storage", help="文件读写根目录，例如 D:/data 或 /srv/geoserver-mcp/files")
+    parser.add_argument(
+        "--transport",
+        choices=["stdio", "sse", "streamable-http"],
+        default="stdio",
+        help="MCP 传输方式，默认使用 stdio。",
+    )
+    parser.add_argument("--host", default="127.0.0.1", help="远程传输监听地址。")
+    parser.add_argument("--port", type=int, default=8000, help="远程传输监听端口。")
+    parser.add_argument("--mount-path", default="/", help="HTTP 服务挂载根路径。")
+    parser.add_argument("--sse-path", default="/sse", help="SSE 模式下的事件路径。")
+    parser.add_argument("--message-path", default="/messages/", help="SSE 模式下的消息路径。")
+    parser.add_argument("--streamable-http-path", default="/mcp", help="Streamable HTTP 模式下的 MCP 路径。")
     args = parser.parse_args()
 
     if args.url:
@@ -35,10 +47,25 @@ def main() -> None:
         logging.getLogger().setLevel(logging.DEBUG)
         logger.debug("已启用调试日志。")
 
+    mcp = create_mcp_server(
+        host=args.host,
+        port=args.port,
+        mount_path=args.mount_path,
+        sse_path=args.sse_path,
+        message_path=args.message_path,
+        streamable_http_path=args.streamable_http_path,
+    )
+
     try:
         print("正在启动 GeoServer MCP 服务...")
         print(f"目标 GeoServer：{os.environ.get('GEOSERVER_URL', 'http://localhost:8080/geoserver')}")
-        mcp.run()
+        print(f"传输方式：{args.transport}")
+        if args.transport != "stdio":
+            if args.transport == "streamable-http":
+                print(f"MCP 地址：http://{args.host}:{args.port}{args.streamable_http_path}")
+            elif args.transport == "sse":
+                print(f"SSE 地址：http://{args.host}:{args.port}{args.sse_path}")
+        mcp.run(transport=args.transport, mount_path=args.mount_path)
     except KeyboardInterrupt:
         logger.info("用户已停止服务。")
     except Exception as exc:
