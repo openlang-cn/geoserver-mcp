@@ -57,6 +57,12 @@ src/geoserver_mcp/
 - `mcp==1.28.1`
 - `geoserver-rest==2.10.0`
 
+## 包名说明
+
+- PyPI 包名：`open-geoserver-mcp`
+- CLI 命令名：`geoserver-mcp`
+- 从 GitHub 直接启动的方式仍然是：`uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp`
+
 ---
 
 ## 安装方式
@@ -67,6 +73,7 @@ src/geoserver_mcp/
 
 - **本地开发 / 本地调试**：用 `uv` 本地安装运行，不需要 Docker
 - **临时使用 / 不想安装项目**：用 `uvx --from git+...`
+- **已发布到 PyPI / 不想依赖 Git**：发布后用 `uvx open-geoserver-mcp`
 - **服务器长期运行 / 提供远程 MCP URL**：用 Docker
 - **1Panel 托管远程服务**：优先用 `docker-compose.yml`
 - **1Panel 导入 MCP 配置**：用 `uvx` 导入模式
@@ -75,6 +82,7 @@ src/geoserver_mcp/
 
 - **本地开发**：`uv`
 - **临时启动**：`uvx`
+- **PyPI 启动**：`uvx open-geoserver-mcp`
 - **远程部署**：Docker
 - **面板管理**：1Panel
 
@@ -125,6 +133,33 @@ uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp \
   --password geoserver
 ```
 
+### 方式二补充：发布到 PyPI 后通过 uvx 运行
+
+```bash
+uvx open-geoserver-mcp --help
+```
+
+连接 GeoServer：
+
+```bash
+uvx open-geoserver-mcp \
+  --url http://localhost:8080/geoserver \
+  --user admin \
+  --password geoserver
+```
+
+从 PyPI 安装：
+
+```bash
+pip install open-geoserver-mcp
+```
+
+安装后的 CLI 命令仍然是：
+
+```bash
+geoserver-mcp --help
+```
+
 ### 方式三：Docker
 
 Docker 主要用于：
@@ -135,6 +170,12 @@ Docker 主要用于：
 - 不想手动维护 Python 运行环境
 
 本地开发和本地调试 **不要求** 使用 Docker。
+
+如果你的容器镜像里没有 `git`，发布到 PyPI 后应优先改用：
+
+```bash
+uvx open-geoserver-mcp
+```
 
 构建镜像：
 

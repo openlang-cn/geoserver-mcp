@@ -58,6 +58,12 @@ Recommended dependency versions:
 - `mcp==1.28.1`
 - `geoserver-rest==2.10.0`
 
+## Package Naming
+
+- PyPI package name: `open-geoserver-mcp`
+- CLI command: `geoserver-mcp`
+- Direct GitHub launch remains: `uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp`
+
 ---
 
 ## Installation
@@ -68,6 +74,7 @@ Choose by scenario:
 
 - **Local development / debugging**: use `uv`, no Docker required
 - **Temporary usage / no local install**: use `uvx --from git+...`
+- **Published package / no Git dependency**: use `uvx open-geoserver-mcp` after PyPI release
 - **Long-running server / remote MCP endpoint**: use Docker
 - **1Panel managed remote deployment**: use `docker-compose.yml`
 - **1Panel imported MCP configuration**: use `uvx` import mode
@@ -76,6 +83,7 @@ In short:
 
 - **Local development**: `uv`
 - **Temporary launch**: `uvx`
+- **Published package**: `uvx open-geoserver-mcp`
 - **Remote deployment**: Docker
 - **Panel management**: 1Panel
 
@@ -124,6 +132,33 @@ uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp \
   --password geoserver
 ```
 
+### Option 2b: Run from PyPI with uvx (after publishing)
+
+```bash
+uvx open-geoserver-mcp --help
+```
+
+With GeoServer connection:
+
+```bash
+uvx open-geoserver-mcp \
+  --url http://localhost:8080/geoserver \
+  --user admin \
+  --password geoserver
+```
+
+Install from PyPI:
+
+```bash
+pip install open-geoserver-mcp
+```
+
+The installed CLI command is still:
+
+```bash
+geoserver-mcp --help
+```
+
 ### Option 3: Docker
 
 Docker is mainly for:
@@ -134,6 +169,12 @@ Docker is mainly for:
 - avoiding manual Python runtime setup
 
 Docker is **not required** for local development or local debugging.
+
+If your container image does not include `git`, prefer the PyPI package after publication:
+
+```bash
+uvx open-geoserver-mcp
+```
 
 Build the image:
 
