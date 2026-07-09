@@ -60,7 +60,7 @@ CLI command: geoserver-mcp
 加入：
 
 ```bash
-uvx open-geoserver-mcp --help
+uvx --from open-geoserver-mcp geoserver-mcp --help
 pip install open-geoserver-mcp
 ```
 
@@ -69,7 +69,7 @@ pip install open-geoserver-mcp
 增加说明：
 
 ```text
-If your container image does not include git, prefer uvx open-geoserver-mcp after publication.
+For command-based launch outside the container, prefer uvx --from open-geoserver-mcp geoserver-mcp.
 ```
 
 ### Task 3: 增加发布工作流

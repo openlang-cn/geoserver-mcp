@@ -6,54 +6,54 @@ MCP server and interact with GeoServer through the Model Context Protocol.
 """
 
 import asyncio
+import argparse
 import json
 import os
-import argparse
-from typing import Dict, List, Any, Optional
+from typing import Any
 
 # 按最新 MCP SDK 规范导入模块
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-# 解析命令行参数
-parser = argparse.ArgumentParser(description="GeoServer MCP Client Example")
-parser.add_argument("--url", help="GeoServer URL (e.g., http://localhost:8080/geoserver)")
-parser.add_argument("--user", help="GeoServer username")
-parser.add_argument("--password", help="GeoServer password")
-parser.add_argument("--server-url", help="Server URL argument to pass to the MCP server")
-parser.add_argument("--server-user", help="Server username argument to pass to the MCP server")
-parser.add_argument("--server-password", help="Server password argument to pass to the MCP server")
-args = parser.parse_args()
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="GeoServer MCP Client Example")
+    parser.add_argument("--url", help="GeoServer URL (e.g., http://localhost:8080/geoserver)")
+    parser.add_argument("--user", help="GeoServer username")
+    parser.add_argument("--password", help="GeoServer password")
+    parser.add_argument("--server-url", help="Server URL argument to pass to the MCP server")
+    parser.add_argument("--server-user", help="Server username argument to pass to the MCP server")
+    parser.add_argument("--server-password", help="Server password argument to pass to the MCP server")
+    return parser
 
-# 配置项——请根据你的环境调整这些值
-GEOSERVER_URL = args.url or os.environ.get("GEOSERVER_URL", "http://localhost:8080/geoserver")
-GEOSERVER_USER = args.user or os.environ.get("GEOSERVER_USER", "admin")
-GEOSERVER_PASSWORD = args.password or os.environ.get("GEOSERVER_PASSWORD", "geoserver")
 
-# 为 stdio 连接创建服务参数
-server_args = []
-if args.server_url:
-    server_args.extend(["--url", args.server_url])
-if args.server_user:
-    server_args.extend(["--user", args.server_user])
-if args.server_password:
-    server_args.extend(["--password", args.server_password])
+def build_server_params(args: argparse.Namespace) -> StdioServerParameters:
+    geoserver_url = args.url or os.environ.get("GEOSERVER_URL", "http://localhost:8080/geoserver")
+    geoserver_user = args.user or os.environ.get("GEOSERVER_USER", "admin")
+    geoserver_password = args.password or os.environ.get("GEOSERVER_PASSWORD", "geoserver")
 
-server_params = StdioServerParameters(
-    command="geoserver-mcp-server",  # 启动 MCP 服务的命令
-    args=server_args,                # 服务启动命令行参数
-    env={                            # 服务所需环境变量
-        "GEOSERVER_URL": GEOSERVER_URL,
-        "GEOSERVER_USER": GEOSERVER_USER,
-        "GEOSERVER_PASSWORD": GEOSERVER_PASSWORD,
-    },
-)
+    server_args = ["--from", "open-geoserver-mcp", "geoserver-mcp"]
+    if args.server_url:
+        server_args.extend(["--url", args.server_url])
+    if args.server_user:
+        server_args.extend(["--user", args.server_user])
+    if args.server_password:
+        server_args.extend(["--password", args.server_password])
+
+    return StdioServerParameters(
+        command="uvx",
+        args=server_args,
+        env={
+            "GEOSERVER_URL": geoserver_url,
+            "GEOSERVER_USER": geoserver_user,
+            "GEOSERVER_PASSWORD": geoserver_password,
+        },
+    )
 
 def print_json(obj: Any) -> None:
     """格式化打印 JSON 对象。"""
     print(json.dumps(obj, indent=2))
 
-async def run():
+async def run(server_params: StdioServerParameters):
     """运行 GeoServer MCP 客户端示例。"""
     print("\n🌍 Starting GeoServer MCP Client Example\n")
     
@@ -222,5 +222,10 @@ async def run():
 
             print("🏁 GeoServer MCP Client Example completed!")
 
+
+def main() -> None:
+    args = build_parser().parse_args()
+    asyncio.run(run(build_server_params(args)))
+
 if __name__ == "__main__":
-    asyncio.run(run())
+    main()

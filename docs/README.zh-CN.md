@@ -15,7 +15,7 @@
 - 查询系统状态、版本信息、重载和重置 GeoServer
 - 支持本地 `stdio` 启动
 - 支持远程 `streamable-http` / `sse` 启动
-- 支持通过 `uvx --from git+...` 直接从 GitHub 拉起
+- 支持通过 `uvx --from open-geoserver-mcp geoserver-mcp` 启动
 
 ---
 
@@ -61,7 +61,6 @@ src/geoserver_mcp/
 
 - PyPI 包名：`open-geoserver-mcp`
 - CLI 命令名：`geoserver-mcp`
-- 从 GitHub 直接启动的方式仍然是：`uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp`
 
 ---
 
@@ -72,8 +71,8 @@ src/geoserver_mcp/
 可以按下面的场景来选：
 
 - **本地开发 / 本地调试**：用 `uv` 本地安装运行，不需要 Docker
-- **临时使用 / 不想安装项目**：用 `uvx --from git+...`
-- **已发布到 PyPI / 不想依赖 Git**：发布后用 `uvx open-geoserver-mcp`
+- **临时使用 / 不想安装项目**：用 `uvx --from open-geoserver-mcp geoserver-mcp`
+- **已发布到 PyPI**：用 `uvx --from open-geoserver-mcp geoserver-mcp`
 - **服务器长期运行 / 提供远程 MCP URL**：用 Docker
 - **1Panel 托管远程服务**：优先用 `docker-compose.yml`
 - **1Panel 导入 MCP 配置**：用 `uvx` 导入模式
@@ -82,7 +81,7 @@ src/geoserver_mcp/
 
 - **本地开发**：`uv`
 - **临时启动**：`uvx`
-- **PyPI 启动**：`uvx open-geoserver-mcp`
+- **PyPI 启动**：`uvx --from open-geoserver-mcp geoserver-mcp`
 - **远程部署**：Docker
 - **面板管理**：1Panel
 
@@ -116,33 +115,16 @@ uv pip install -e .
 uv pip install -e ".[dev]"
 ```
 
-### 方式二：通过 GitHub + uvx 直接运行
-
-如果你不想先安装项目，可以直接从公开 GitHub 仓库启动：
+### 方式二：通过 PyPI + uvx 直接运行
 
 ```bash
-uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp --help
+uvx --from open-geoserver-mcp geoserver-mcp --help
 ```
 
 连接 GeoServer：
 
 ```bash
-uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp \
-  --url http://localhost:8080/geoserver \
-  --user admin \
-  --password geoserver
-```
-
-### 方式二补充：发布到 PyPI 后通过 uvx 运行
-
-```bash
-uvx open-geoserver-mcp --help
-```
-
-连接 GeoServer：
-
-```bash
-uvx open-geoserver-mcp \
+uvx --from open-geoserver-mcp geoserver-mcp \
   --url http://localhost:8080/geoserver \
   --user admin \
   --password geoserver
@@ -171,10 +153,10 @@ Docker 主要用于：
 
 本地开发和本地调试 **不要求** 使用 Docker。
 
-如果你的容器镜像里没有 `git`，发布到 PyPI 后应优先改用：
+容器外如果采用命令启动，建议直接使用 PyPI 包：
 
 ```bash
-uvx open-geoserver-mcp
+uvx --from open-geoserver-mcp geoserver-mcp
 ```
 
 构建镜像：
@@ -372,7 +354,7 @@ Codex 配置：
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/openlang-cn/geoserver-mcp.git",
+        "open-geoserver-mcp",
         "geoserver-mcp"
       ],
       "env": {
@@ -422,7 +404,7 @@ Codex 配置：
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/openlang-cn/geoserver-mcp.git",
+        "open-geoserver-mcp",
         "geoserver-mcp"
       ],
       "env": {
@@ -439,7 +421,7 @@ Codex 配置：
 
 - 名称：`geoserver-mcp`
 - 类型：`适合 uvx 启动的 mcp`
-- 启动命令：`uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp`
+- 启动命令：`uvx --from open-geoserver-mcp geoserver-mcp`
 - 外部访问路径：`http://<your-server-ip>:8084`
 - 输出类型：`sse`
 - SSE 路径：`/geoserver-mcp`
@@ -487,7 +469,7 @@ Container path: /data
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/openlang-cn/geoserver-mcp.git",
+        "open-geoserver-mcp",
         "geoserver-mcp"
       ],
       "env": {
@@ -504,7 +486,7 @@ Container path: /data
 
 - 名称：`geoserver-mcp`
 - 类型：`适合 uvx 启动的 mcp`
-- 启动命令：`uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp`
+- 启动命令：`uvx --from open-geoserver-mcp geoserver-mcp`
 - 外部访问路径：`http://<your-server-ip>:8084`
 - 输出类型：`streamableHttp`
 - SSE 路径：`/geoserver-mcp`
@@ -680,14 +662,6 @@ pytest tests -q
 
 ```bash
 python -m py_compile src/geoserver_mcp/main.py
-```
-
-### 当前分支开发
-
-如果你想让 1Panel / uvx 固定拉某个分支，可以这样：
-
-```bash
-uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git@codex/geoserver-mcp-light-engineering geoserver-mcp
 ```
 
 ---

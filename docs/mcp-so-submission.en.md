@@ -29,8 +29,7 @@ It wraps the GeoServer REST API into MCP tools for:
 It supports:
 
 - local stdio mode
-- `uvx --from git+...` launch from GitHub
-- `uvx open-geoserver-mcp` launch after PyPI publication
+- `uvx --from open-geoserver-mcp geoserver-mcp` launch from PyPI
 - Docker deployment
 - remote `streamable-http`
 - remote `sse`
@@ -38,22 +37,16 @@ It supports:
 
 ## Launch Options
 
-### Run from GitHub with uvx
+### Run from PyPI with uvx
 
 ```bash
-uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp
-```
-
-### Run from PyPI with uvx (after publishing)
-
-```bash
-uvx open-geoserver-mcp
+uvx --from open-geoserver-mcp geoserver-mcp
 ```
 
 ### Run with GeoServer parameters
 
 ```bash
-uvx --from git+https://github.com/openlang-cn/geoserver-mcp.git geoserver-mcp \
+uvx --from open-geoserver-mcp geoserver-mcp \
   --url http://localhost:8080/geoserver \
   --user admin \
   --password geoserver
@@ -97,7 +90,7 @@ Optional:
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/openlang-cn/geoserver-mcp.git",
+        "open-geoserver-mcp",
         "geoserver-mcp"
       ],
       "env": {
