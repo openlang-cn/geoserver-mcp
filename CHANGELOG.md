@@ -18,11 +18,22 @@ The format is based on Keep a Changelog, and this project uses semantic versioni
 - Documentation was reorganized under `docs/`, and deployment assets were grouped under `deploy/`.
 - CI now runs on Python 3.12 only, and coverage gates were aligned with the expanded test suite.
 
-## [1.0.1] - 2026-07-09
+## [1.0.2] - 2026-07-09
+
+### Fixed
+
+- MCP tool return annotations corrected to match `geo` library contracts (security, catalog, styles, system).
+- `get_version()` now returns `dict` instead of `str`, matching the underlying `geo.Geoserver` API.
+- Style XML tools (`style_outline_only_xml`, `style_catagorize_xml`, `style_classified_xml`, `style_coverage_style_xml`) capture generated `style.sld` content instead of returning `None`.
+- Named color ramp strings (e.g. `"viridis"`) in `style_coverage_style_colormapentry` and `style_coverage_style_xml` are expanded to real hex colors via seaborn.
+- `geo.Style` / `seaborn` / `matplotlib` imports deferred to lazy loading to avoid blocking module import.
+- WMS/WFS resource URIs tightened from `{request}` templates to static `GetCapabilities` resources.
 
 ### Changed
 
-- Republished release metadata after the original `1.0.0` PyPI filename could no longer be reused.
+- Bumped from `1.0.1`; `1.0.0` PyPI filename could no longer be reused.
+- Documentation: added `uvx --refresh` / `--no-cache` usage to installation guide.
+- Tests: added `test_tool_contracts.py` to lock return annotations against `geo` library contracts.
 
 ## [1.0.0] - 2026-07-09
 

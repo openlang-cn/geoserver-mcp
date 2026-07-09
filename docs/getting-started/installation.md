@@ -59,6 +59,20 @@ uv pip install -e ".[dev]"
 uvx --from open-geoserver-mcp geoserver-mcp --help
 ```
 
+
+`uvx` caches packages by default. To force a fresh pull of the latest version:
+
+```bash
+uvx --refresh --from open-geoserver-mcp geoserver-mcp --help
+```
+
+Or skip the cache entirely:
+
+```bash
+uvx --no-cache --from open-geoserver-mcp geoserver-mcp --help
+```
+
+
 With GeoServer connection:
 
 ```bash
@@ -158,3 +172,4 @@ For Docker or 1Panel:
 
 - `GEOSERVER_STORAGE_PATH` should point to the container path
 - the matching host directory must be mounted into the container
+
