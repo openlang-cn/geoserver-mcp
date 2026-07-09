@@ -5,15 +5,15 @@ This example demonstrates how to use the MCP client to connect to the GeoServer
 MCP server and interact with GeoServer through the Model Context Protocol.
 """
 
-import asyncio
 import argparse
+import asyncio
 import json
 import os
 from typing import Any
 
-# 按最新 MCP SDK 规范导入模块
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="GeoServer MCP Client Example")
@@ -22,7 +22,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--password", help="GeoServer password")
     parser.add_argument("--server-url", help="Server URL argument to pass to the MCP server")
     parser.add_argument("--server-user", help="Server username argument to pass to the MCP server")
-    parser.add_argument("--server-password", help="Server password argument to pass to the MCP server")
+    parser.add_argument(
+        "--server-password",
+        help="Server password argument to pass to the MCP server",
+    )
     return parser
 
 
@@ -49,14 +52,16 @@ def build_server_params(args: argparse.Namespace) -> StdioServerParameters:
         },
     )
 
+
 def print_json(obj: Any) -> None:
     """格式化打印 JSON 对象。"""
     print(json.dumps(obj, indent=2))
 
+
 async def run(server_params: StdioServerParameters):
     """运行 GeoServer MCP 客户端示例。"""
     print("\n🌍 Starting GeoServer MCP Client Example\n")
-    
+
     async with stdio_client(server_params) as (read, write):
         async with ClientSession(read, write) as session:
             # 初始化连接
@@ -95,8 +100,8 @@ async def run(server_params: StdioServerParameters):
                             workspaces = json.loads(workspaces)
                         except json.JSONDecodeError:
                             # 如果不是 JSON，可能是逗号分隔的列表
-                            workspaces = [w.strip() for w in workspaces.strip('[]').split(',')]
-                    
+                            workspaces = [w.strip() for w in workspaces.strip("[]").split(",")]
+
                     print(f"Found {len(workspaces)} workspaces:")
                     for workspace in workspaces:
                         print(f"  - {workspace}")
@@ -161,8 +166,8 @@ async def run(server_params: StdioServerParameters):
                         "bbox": [-124.73, 24.96, -66.97, 49.37],
                         "width": 800,
                         "height": 600,
-                        "format": "png"
-                    }
+                        "format": "png",
+                    },
                 )
                 if map_result.isError:
                     print(f"❌ Error: {map_result.content[0].text}")
@@ -175,14 +180,14 @@ async def run(server_params: StdioServerParameters):
             except Exception as e:
                 print(f"❌ Error generating map: {e}")
                 print()
-                
+
             # 示例 5：创建工作区
             print("📁 Example 5: Creating a workspace")
             print("--------------------------------")
             try:
                 create_result = await session.call_tool(
                     "create_workspace",
-                    {"workspace": "demo-workspace"}
+                    {"workspace": "demo-workspace"},
                 )
                 if create_result.isError:
                     print(f"❌ Error: {create_result.content[0].text}")
@@ -193,7 +198,7 @@ async def run(server_params: StdioServerParameters):
             except Exception as e:
                 print(f"❌ Error creating workspace: {e}")
                 print()
-                
+
             # 示例 6：访问目录资源
             print("📋 Example 6: Accessing a catalog resource")
             print("----------------------------------------")
@@ -226,6 +231,7 @@ async def run(server_params: StdioServerParameters):
 def main() -> None:
     args = build_parser().parse_args()
     asyncio.run(run(build_server_params(args)))
+
 
 if __name__ == "__main__":
     main()

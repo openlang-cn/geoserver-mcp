@@ -27,7 +27,14 @@ class FakeStyleClient:
         self.calls.append(("create_coveragestyle", raster_path, params))
         return 201
 
-    def create_outline_featurestyle(self, style_name, color="#3579b1", width="2", geom_type="polygon", workspace=None):
+    def create_outline_featurestyle(
+        self,
+        style_name,
+        color="#3579b1",
+        width="2",
+        geom_type="polygon",
+        workspace=None,
+    ):
         self.calls.append(
             ("create_outline_featurestyle", style_name, color, width, geom_type, workspace)
         )
@@ -71,11 +78,18 @@ def test_create_coveragestyle_extracts_raster_path_from_params(monkeypatch):
     monkeypatch.setattr(styles, "require_geoserver", lambda: fake)
     monkeypatch.setenv("GEOSERVER_STORAGE_PATH", "D:/rasters")
 
-    result = styles.create_coveragestyle("landsat", {"raster_path": "landsat.tif", "workspace": "demo"})
+    result = styles.create_coveragestyle(
+        "landsat",
+        {"raster_path": "landsat.tif", "workspace": "demo"},
+    )
 
     assert result == 201
     assert fake.calls == [
-        ("create_coveragestyle", os.path.join("D:/rasters", "landsat.tif"), {"style_name": "landsat", "workspace": "demo"})
+        (
+            "create_coveragestyle",
+            os.path.join("D:/rasters", "landsat.tif"),
+            {"style_name": "landsat", "workspace": "demo"},
+        )
     ]
 
 

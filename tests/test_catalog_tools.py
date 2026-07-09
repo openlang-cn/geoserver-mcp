@@ -137,7 +137,9 @@ def test_featuretype_tools_delegate_in_geo_parameter_order(monkeypatch):
     fake = FakeCatalogClient()
     monkeypatch.setattr(catalog, "require_geoserver", lambda: fake)
 
-    assert catalog.edit_featuretype("demo", "pg", "roads", "{'name': 'roads', 'title': 'Roads'}") == {"ok": True}
+    result = catalog.edit_featuretype("demo", "pg", "roads", "{'name': 'roads', 'title': 'Roads'}")
+
+    assert result == {"ok": True}
     assert catalog.get_featuretypes("demo", "pg") == ["roads"]
     assert catalog.get_feature_attribute("demo", "pg", "roads") == ["id", "name"]
     assert fake.calls == [

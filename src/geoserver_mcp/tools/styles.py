@@ -16,14 +16,19 @@ def create_style(name: str, sld: str, workspace: Optional[str] = None) -> dict:
 
 
 def upload_style(
-        path: str,
-        name: Optional[str] = None,
-        workspace: Optional[str] = None,
-        sld_version: str = "1.0.0",
+    path: str,
+    name: Optional[str] = None,
+    workspace: Optional[str] = None,
+    sld_version: str = "1.0.0",
 ) -> dict:
     """上传样式文件或 SLD XML。"""
     resolved = resolve_storage_path(path)
-    result = require_geoserver().upload_style(resolved, name=name, workspace=workspace, sld_version=sld_version)
+    result = require_geoserver().upload_style(
+        resolved,
+        name=name,
+        workspace=workspace,
+        sld_version=sld_version,
+    )
     return {"status": "success", "name": name, "workspace": workspace or "global", "result": result}
 
 
@@ -43,12 +48,12 @@ def publish_style(layer_name: str, style_name: str, workspace: str) -> dict:
 
 
 def create_catagorized_featurestyle(
-        style_name: str,
-        column_name: str,
-        column_distinct_values: str,
-        workspace: Optional[str] = None,
-        color_ramp: Optional[str] = None,
-        geom_type: Optional[str] = None,
+    style_name: str,
+    column_name: str,
+    column_distinct_values: str,
+    workspace: Optional[str] = None,
+    color_ramp: Optional[str] = None,
+    geom_type: Optional[str] = None,
 ) -> dict:
     """创建分类矢量样式。"""
     return require_geoserver().create_catagorized_featurestyle(
@@ -62,12 +67,12 @@ def create_catagorized_featurestyle(
 
 
 def create_classified_featurestyle(
-        style_name: str,
-        column_name: str,
-        column_distinct_values: str,
-        workspace: Optional[str] = None,
-        color_ramp: Optional[str] = None,
-        geom_type: Optional[str] = None,
+    style_name: str,
+    column_name: str,
+    column_distinct_values: str,
+    workspace: Optional[str] = None,
+    color_ramp: Optional[str] = None,
+    geom_type: Optional[str] = None,
 ) -> dict:
     """创建分级矢量样式。"""
     return require_geoserver().create_classified_featurestyle(
@@ -94,11 +99,11 @@ def create_coveragestyle(style_name: str, params: dict) -> dict:
 
 
 def create_outline_featurestyle(
-        style_name: str,
-        outline_color: str,
-        workspace: Optional[str] = None,
-        width: str = "2",
-        geom_type: str = "polygon",
+    style_name: str,
+    outline_color: str,
+    workspace: Optional[str] = None,
+    width: str = "2",
+    geom_type: str = "polygon",
 ) -> dict:
     """创建仅轮廓样式。"""
     return require_geoserver().create_outline_featurestyle(
@@ -111,44 +116,44 @@ def create_outline_featurestyle(
 
 
 def style_catagorize_xml(
-        column_name: str,
-        values: list,
-        color_ramp: Optional[str] = None,
-        geom_type: str = "polygon",
+    column_name: str,
+    values: list,
+    color_ramp: Optional[str] = None,
+    geom_type: str = "polygon",
 ) -> str:
     """生成分类样式 SLD XML。"""
     return Style.catagorize_xml(column_name, values, color_ramp, geom_type)
 
 
 def style_classified_xml(
-        style_name: str,
-        column_name: str,
-        values: list,
-        color_ramp: Optional[str] = None,
-        geom_type: str = "polygon",
+    style_name: str,
+    column_name: str,
+    values: list,
+    color_ramp: Optional[str] = None,
+    geom_type: str = "polygon",
 ) -> str:
     """生成分级样式 SLD XML。"""
     return Style.classified_xml(style_name, column_name, values, color_ramp, geom_type)
 
 
 def style_coverage_style_colormapentry(
-        color_ramp,
-        min_value: float,
-        max_value: float,
-        number_of_classes: Optional[int] = None,
+    color_ramp,
+    min_value: float,
+    max_value: float,
+    number_of_classes: Optional[int] = None,
 ):
     """生成栅格色带条目。"""
     return Style.coverage_style_colormapentry(color_ramp, min_value, max_value, number_of_classes)
 
 
 def style_coverage_style_xml(
-        color_ramp,
-        style_name,
-        cmap_type,
-        min_value,
-        max_value,
-        number_of_classes,
-        opacity,
+    color_ramp,
+    style_name,
+    cmap_type,
+    min_value,
+    max_value,
+    number_of_classes,
+    opacity,
 ):
     """生成栅格样式 XML。"""
     return Style.coverage_style_xml(

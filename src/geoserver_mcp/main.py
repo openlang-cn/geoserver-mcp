@@ -19,7 +19,10 @@ def main() -> None:
     parser.add_argument("--user", help="GeoServer 用户名")
     parser.add_argument("--password", help="GeoServer 密码")
     parser.add_argument("--debug", action="store_true", help="启用调试日志")
-    parser.add_argument("--storage", help="文件读写根目录，例如 D:/data 或 /srv/geoserver-mcp/files")
+    parser.add_argument(
+        "--storage",
+        help="文件读写根目录，例如 D:/data 或 /srv/geoserver-mcp/files",
+    )
     parser.add_argument(
         "--transport",
         choices=["stdio", "sse", "streamable-http"],
@@ -31,7 +34,11 @@ def main() -> None:
     parser.add_argument("--mount-path", default="/", help="HTTP 服务挂载根路径。")
     parser.add_argument("--sse-path", default="/sse", help="SSE 模式下的事件路径。")
     parser.add_argument("--message-path", default="/messages/", help="SSE 模式下的消息路径。")
-    parser.add_argument("--streamable-http-path", default="/mcp", help="Streamable HTTP 模式下的 MCP 路径。")
+    parser.add_argument(
+        "--streamable-http-path",
+        default="/mcp",
+        help="Streamable HTTP 模式下的 MCP 路径。",
+    )
     args = parser.parse_args()
 
     if args.url:

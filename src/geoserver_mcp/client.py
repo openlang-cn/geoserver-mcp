@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterable, Optional
 
 if TYPE_CHECKING:
@@ -78,7 +76,11 @@ class GeoServerClient:
     def delete_datastore(self, name: str, workspace: Optional[str] = None):
         if not workspace:
             raise ValueError("删除 datastore 时必须提供 workspace。")
-        return self.request("delete", f"/rest/workspaces/{workspace}/datastores/{name}", params={"recurse": "true"})
+        return self.request(
+            "delete",
+            f"/rest/workspaces/{workspace}/datastores/{name}",
+            params={"recurse": "true"},
+        )
 
     def delete_coverage(self, name: str, workspace: Optional[str] = None):
         return self._geo.delete_coveragestore(name, workspace=workspace)
@@ -113,21 +115,26 @@ class GeoServerClient:
         return self._geo.get_styles(workspace=workspace)
 
     def upload_style(
-            self,
-            path: str,
-            name: Optional[str] = None,
-            workspace: Optional[str] = None,
-            sld_version: str = "1.0.0",
+        self,
+        path: str,
+        name: Optional[str] = None,
+        workspace: Optional[str] = None,
+        sld_version: str = "1.0.0",
     ):
-        return self._geo.upload_style(path=path, name=name, workspace=workspace, sld_version=sld_version)
+        return self._geo.upload_style(
+            path=path,
+            name=name,
+            workspace=workspace,
+            sld_version=sld_version,
+        )
 
     def query_features(
-            self,
-            workspace: str,
-            layer: str,
-            filter: Optional[str] = None,
-            properties: Optional[list[str]] = None,
-            max_features: Optional[int] = None,
+        self,
+        workspace: str,
+        layer: str,
+        filter: Optional[str] = None,
+        properties: Optional[list[str]] = None,
+        max_features: Optional[int] = None,
     ) -> Dict[str, Any]:
         params: Dict[str, Any] = {
             "service": "WFS",
@@ -148,13 +155,13 @@ class GeoServerClient:
         return response.json()
 
     def generate_map(
-            self,
-            layers: list[str],
-            styles: Optional[list[str]] = None,
-            bbox: Optional[list[float]] = None,
-            width: int = 1024,
-            height: int = 768,
-            format: str = "image/png",
+        self,
+        layers: list[str],
+        styles: Optional[list[str]] = None,
+        bbox: Optional[list[float]] = None,
+        width: int = 1024,
+        height: int = 768,
+        format: str = "image/png",
     ) -> Dict[str, Any]:
         if bbox is None:
             bbox = [-180, -90, 180, 90]
@@ -173,15 +180,16 @@ class GeoServerClient:
         if styles:
             params["styles"] = ",".join(styles)
 
-        url = f"{self.service_url}/wms?{'&'.join(f'{key}={value}' for key, value in params.items())}"
+        query_string = "&".join(f"{key}={value}" for key, value in params.items())
+        url = f"{self.service_url}/wms?{query_string}"
         return {"url": url, "params": params}
 
     def publish_featurestore_sqlview(
-            self,
-            store_name: str,
-            params: Dict[str, Any],
-            sqlview_params: Iterable[Dict[str, Any]],
-            workspace: str,
+        self,
+        store_name: str,
+        params: Dict[str, Any],
+        sqlview_params: Iterable[Dict[str, Any]],
+        workspace: str,
     ):
         return self._geo.publish_featurestore_sqlview(
             name=params["name"],
@@ -211,13 +219,13 @@ class GeoServerClient:
         return self._geo.update_service(service, **options)
 
     def publish_time_dimension_to_coveragestore(
-            self,
-            store_name: Optional[str] = None,
-            workspace: Optional[str] = None,
-            presentation: str = "LIST",
-            units: str = "ISO8601",
-            default_value: str = "MINIMUM",
-            content_type: str = "application/xml; charset=UTF-8",
+        self,
+        store_name: Optional[str] = None,
+        workspace: Optional[str] = None,
+        presentation: str = "LIST",
+        units: str = "ISO8601",
+        default_value: str = "MINIMUM",
+        content_type: str = "application/xml; charset=UTF-8",
     ):
         return self._geo.publish_time_dimension_to_coveragestore(
             store_name,

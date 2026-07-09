@@ -5,7 +5,12 @@ from __future__ import annotations
 from ..utils import require_geoserver
 
 
-def create_user(username: str, password: str, enabled: bool = True, service: str | None = None) -> dict:
+def create_user(
+    username: str,
+    password: str,
+    enabled: bool = True,
+    service: str | None = None,
+) -> dict:
     """创建用户。"""
     return require_geoserver().create_user(username, password, enabled, service)
 
@@ -21,11 +26,11 @@ def get_all_users(service: str | None = None) -> list:
 
 
 def modify_user(
-        username: str,
-        new_name: str | None = None,
-        new_password: str | None = None,
-        enable: bool | None = None,
-        service: str | None = None,
+    username: str,
+    new_name: str | None = None,
+    new_password: str | None = None,
+    enable: bool | None = None,
+    service: str | None = None,
 ) -> dict:
     """修改用户属性。"""
     return require_geoserver().modify_user(

@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from ..utils import normalize_workspace_names, parse_mapping, require_geoserver, resolve_storage_path
+from ..utils import (
+    normalize_workspace_names,
+    parse_mapping,
+    require_geoserver,
+    resolve_storage_path,
+)
 
 
 def list_workspaces() -> list[str]:
@@ -85,27 +90,33 @@ def delete_resource(resource_type: str, workspace: str, name: str) -> Dict[str, 
     else:
         result = geo.delete_coverage(name, workspace)
 
-    return {"status": "success", "type": resource_type, "name": name, "workspace": workspace, "result": str(result)}
+    return {
+        "status": "success",
+        "type": resource_type,
+        "name": name,
+        "workspace": workspace,
+        "result": str(result),
+    }
 
 
 def query_features(
-        workspace: str,
-        layer: str,
-        filter: Optional[str] = None,
-        properties: Optional[list[str]] = None,
-        max_features: Optional[int] = None,
+    workspace: str,
+    layer: str,
+    filter: Optional[str] = None,
+    properties: Optional[list[str]] = None,
+    max_features: Optional[int] = None,
 ) -> dict:
     """查询矢量图层要素。"""
     return require_geoserver().query_features(workspace, layer, filter, properties, max_features)
 
 
 def generate_map(
-        layers: list[str],
-        styles: Optional[list[str]] = None,
-        bbox: Optional[list[float]] = None,
-        width: int = 1024,
-        height: int = 768,
-        format: str = "image/png",
+    layers: list[str],
+    styles: Optional[list[str]] = None,
+    bbox: Optional[list[float]] = None,
+    width: int = 1024,
+    height: int = 768,
+    format: str = "image/png",
 ) -> dict:
     """生成 WMS 地图访问参数。"""
     return require_geoserver().generate_map(layers, styles, bbox, width, height, format)
@@ -126,12 +137,14 @@ def create_featurestore(workspace: str, name: str, params: dict) -> dict:
 
 def create_gpkg_datastore(workspace: str, name: str, file_path: str) -> dict:
     """创建 GeoPackage 数据存储。"""
-    return require_geoserver().create_gpkg_datastore(workspace, name, resolve_storage_path(file_path))
+    resolved_path = resolve_storage_path(file_path)
+    return require_geoserver().create_gpkg_datastore(workspace, name, resolved_path)
 
 
 def create_shp_datastore(workspace: str, name: str, file_path: str) -> dict:
     """创建 Shapefile 数据存储。"""
-    return require_geoserver().create_shp_datastore(workspace, name, resolve_storage_path(file_path))
+    resolved_path = resolve_storage_path(file_path)
+    return require_geoserver().create_shp_datastore(workspace, name, resolved_path)
 
 
 def create_coveragestore(workspace: str, name: str, params: dict) -> dict:
@@ -178,15 +191,15 @@ def delete_featurestore(workspace: str, name: str) -> str:
 
 
 def create_layergroup(
-        workspace: str,
-        name: str,
-        layers: list,
-        metadata: Optional[list[dict]] = None,
-        keywords: Optional[list[str]] = None,
-        mode: str = "single",
-        title: Optional[str] = None,
-        abstract_text: Optional[str] = None,
-        formats: str = "html",
+    workspace: str,
+    name: str,
+    layers: list,
+    metadata: Optional[list[dict]] = None,
+    keywords: Optional[list[str]] = None,
+    mode: str = "single",
+    title: Optional[str] = None,
+    abstract_text: Optional[str] = None,
+    formats: str = "html",
 ) -> dict:
     """创建图层组。"""
     geo = require_geoserver()
@@ -214,10 +227,10 @@ def get_layergroups(workspace: str) -> dict:
 
 
 def add_layer_to_layergroup(
-        layer_name: str,
-        layer_workspace: str,
-        layergroup_name: str,
-        layergroup_workspace: Optional[str] = None,
+    layer_name: str,
+    layer_workspace: str,
+    layergroup_name: str,
+    layergroup_workspace: Optional[str] = None,
 ) -> dict:
     """向图层组添加图层。"""
     return require_geoserver().add_layer_to_layergroup(
@@ -229,10 +242,10 @@ def add_layer_to_layergroup(
 
 
 def remove_layer_from_layergroup(
-        layer_name: str,
-        layer_workspace: str,
-        layergroup_name: str,
-        layergroup_workspace: Optional[str] = None,
+    layer_name: str,
+    layer_workspace: str,
+    layergroup_name: str,
+    layergroup_workspace: Optional[str] = None,
 ) -> dict:
     """从图层组移除图层。"""
     return require_geoserver().remove_layer_from_layergroup(
@@ -249,12 +262,12 @@ def delete_layergroup(workspace: str, name: str) -> dict:
 
 
 def update_layergroup(
-        layergroup_name: str,
-        title: Optional[str] = None,
-        abstract_text: Optional[str] = None,
-        formats: str = "html",
-        metadata: Optional[list] = None,
-        keywords: Optional[list] = None,
+    layergroup_name: str,
+    title: Optional[str] = None,
+    abstract_text: Optional[str] = None,
+    formats: str = "html",
+    metadata: Optional[list] = None,
+    keywords: Optional[list] = None,
 ) -> dict:
     """更新图层组元数据。"""
     return require_geoserver().update_layergroup(
@@ -272,14 +285,29 @@ def publish_featurestore(workspace: str, store_name: str, params: dict) -> dict:
     return require_geoserver().publish_featurestore(store_name, params, workspace)
 
 
-def publish_featurestore_sqlview(workspace: str, store_name: str, params: dict, sqlview_params: list) -> dict:
+def publish_featurestore_sqlview(
+    workspace: str,
+    store_name: str,
+    params: dict,
+    sqlview_params: list,
+) -> dict:
     """通过 SQL 视图发布图层。"""
-    return require_geoserver().publish_featurestore_sqlview(store_name, params, sqlview_params, workspace)
+    return require_geoserver().publish_featurestore_sqlview(
+        store_name,
+        params,
+        sqlview_params,
+        workspace,
+    )
 
 
 def edit_featuretype(workspace: str, store_name: str, featuretype: str, kwargs: str) -> dict:
     """更新要素类型配置。"""
-    return require_geoserver().edit_featuretype(store_name, workspace, featuretype, **parse_mapping(kwargs))
+    return require_geoserver().edit_featuretype(
+        store_name,
+        workspace,
+        featuretype,
+        **parse_mapping(kwargs),
+    )
 
 
 def get_featuretypes(workspace: str, store_name: str) -> dict:
