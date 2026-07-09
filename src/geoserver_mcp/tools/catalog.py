@@ -17,7 +17,7 @@ def create_workspace(workspace: str) -> Dict[str, Any]:
     geo = require_geoserver()
     if not workspace:
         raise ValueError("工作区名称不能为空。")
-    existing = geo.get_workspaces()
+    existing = normalize_workspace_names(geo.get_workspaces())
     if workspace in existing:
         return {"status": "info", "workspace": workspace, "message": f"工作区“{workspace}”已存在。"}
     geo.create_workspace(workspace)
@@ -177,10 +177,30 @@ def delete_featurestore(workspace: str, name: str) -> str:
     return require_geoserver().delete_featurestore(name, workspace)
 
 
-def create_layergroup(workspace: str, name: str, layers: list, styles: Optional[list] = None) -> dict:
+def create_layergroup(
+        workspace: str,
+        name: str,
+        layers: list,
+        metadata: Optional[list[dict]] = None,
+        keywords: Optional[list[str]] = None,
+        mode: str = "single",
+        title: Optional[str] = None,
+        abstract_text: Optional[str] = None,
+        formats: str = "html",
+) -> dict:
     """创建图层组。"""
     geo = require_geoserver()
-    return geo.create_layergroup(name=name, layers=layers, workspace=workspace, metadata=styles or [])
+    return geo.create_layergroup(
+        name=name,
+        mode=mode,
+        title=title or name,
+        abstract_text=abstract_text or name,
+        layers=layers,
+        workspace=workspace,
+        formats=formats,
+        metadata=metadata or [],
+        keywords=keywords or [],
+    )
 
 
 def get_layergroup(workspace: str, name: str) -> dict:
@@ -259,17 +279,17 @@ def publish_featurestore_sqlview(workspace: str, store_name: str, params: dict, 
 
 def edit_featuretype(workspace: str, store_name: str, featuretype: str, kwargs: str) -> dict:
     """更新要素类型配置。"""
-    return require_geoserver().edit_featuretype(featuretype, store_name, workspace, **parse_mapping(kwargs))
+    return require_geoserver().edit_featuretype(store_name, workspace, featuretype, **parse_mapping(kwargs))
 
 
 def get_featuretypes(workspace: str, store_name: str) -> dict:
     """列出要素类型。"""
-    return require_geoserver().get_featuretypes(store_name, workspace)
+    return require_geoserver().get_featuretypes(workspace, store_name)
 
 
 def get_feature_attribute(workspace: str, store_name: str, featuretype: str) -> dict:
     """获取要素属性定义。"""
-    return require_geoserver().get_feature_attribute(featuretype, store_name, workspace)
+    return require_geoserver().get_feature_attribute(featuretype, workspace, store_name)
 
 
 TOOLS = [

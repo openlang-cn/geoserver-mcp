@@ -82,12 +82,32 @@ def create_classified_featurestyle(
 
 def create_coveragestyle(style_name: str, params: dict) -> dict:
     """创建栅格样式。"""
-    return require_geoserver().create_coveragestyle(style_name, **params)
+    params = dict(params)
+    raster_path = params.pop("raster_path", None) or params.pop("path", None)
+    if not raster_path:
+        raise ValueError("params.raster_path 或 params.path 为必填项。")
+    return require_geoserver().create_coveragestyle(
+        resolve_storage_path(raster_path),
+        style_name=style_name,
+        **params,
+    )
 
 
-def create_outline_featurestyle(style_name: str, outline_color: str, workspace: Optional[str] = None) -> dict:
+def create_outline_featurestyle(
+        style_name: str,
+        outline_color: str,
+        workspace: Optional[str] = None,
+        width: str = "2",
+        geom_type: str = "polygon",
+) -> dict:
     """创建仅轮廓样式。"""
-    return require_geoserver().create_outline_featurestyle(style_name, outline_color, workspace)
+    return require_geoserver().create_outline_featurestyle(
+        style_name,
+        color=outline_color,
+        width=width,
+        geom_type=geom_type,
+        workspace=workspace,
+    )
 
 
 def style_catagorize_xml(
