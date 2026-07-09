@@ -42,12 +42,12 @@ def test_resources_cover_success_no_connection_and_error_paths(monkeypatch):
     monkeypatch.setattr(resources, "get_geoserver", lambda: FakeResourceClient())
     assert resources.get_workspaces_resource() == {"workspaces": ["fire_monitor", "demo"]}
     assert resources.get_layer_resource("demo", "roads") == {"layer": "roads", "workspace": "demo"}
-    assert resources.get_wms_resource("GetCapabilities") == {
+    assert resources.get_wms_resource() == {
         "service": "WMS",
         "request": "GetCapabilities",
         "capabilities": {"content": "<wms />"},
     }
-    assert resources.get_wfs_resource("GetCapabilities") == {
+    assert resources.get_wfs_resource() == {
         "service": "WFS",
         "request": "GetCapabilities",
         "capabilities": {"content": "<wfs />"},
@@ -58,10 +58,10 @@ def test_resources_cover_success_no_connection_and_error_paths(monkeypatch):
     assert resources.get_layer_resource("demo", "roads") == {"error": "未连接到 GeoServer。"}
 
     monkeypatch.setattr(resources, "get_geoserver", lambda: FakeResourceClient(fail="wms"))
-    assert resources.get_wms_resource("GetCapabilities") == {"error": "wms failed"}
+    assert resources.get_wms_resource() == {"error": "wms failed"}
 
     monkeypatch.setattr(resources, "get_geoserver", lambda: FakeResourceClient(fail="wfs"))
-    assert resources.get_wfs_resource("GetCapabilities") == {"error": "wfs failed"}
+    assert resources.get_wfs_resource() == {"error": "wfs failed"}
 
     monkeypatch.setattr(resources, "get_geoserver", lambda: FakeResourceClient(fail="layer"))
     assert resources.get_layer_resource("demo", "roads") == {"error": "layer failed"}
@@ -75,6 +75,6 @@ def test_register_resources_registers_every_registry_entry():
     assert [uri for uri, _ in mcp.registered] == [
         "geoserver://catalog/workspaces",
         "geoserver://catalog/layers/{workspace}/{layer}",
-        "geoserver://services/wms/{request}",
-        "geoserver://services/wfs/{request}",
+        "geoserver://services/wms/GetCapabilities",
+        "geoserver://services/wfs/GetCapabilities",
     ]

@@ -22,7 +22,7 @@ def get_system_status() -> dict:
     return require_geoserver().get_system_status()
 
 
-def get_version() -> str:
+def get_version() -> dict:
     """获取 GeoServer 版本。"""
     return require_geoserver().get_version()
 

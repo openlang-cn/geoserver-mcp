@@ -10,17 +10,17 @@ def create_user(
     password: str,
     enabled: bool = True,
     service: str | None = None,
-) -> dict:
+) -> str:
     """创建用户。"""
     return require_geoserver().create_user(username, password, enabled, service)
 
 
-def delete_user(username: str, service: str | None = None) -> dict:
+def delete_user(username: str, service: str | None = None) -> str:
     """删除用户。"""
     return require_geoserver().delete_user(username, service)
 
 
-def get_all_users(service: str | None = None) -> list:
+def get_all_users(service: str | None = None) -> dict:
     """列出所有用户。"""
     return require_geoserver().get_all_users(service)
 
@@ -31,7 +31,7 @@ def modify_user(
     new_password: str | None = None,
     enable: bool | None = None,
     service: str | None = None,
-) -> dict:
+) -> str:
     """修改用户属性。"""
     return require_geoserver().modify_user(
         username,
@@ -42,17 +42,17 @@ def modify_user(
     )
 
 
-def create_usergroup(name: str, service: str | None = None) -> dict:
+def create_usergroup(name: str, service: str | None = None) -> str:
     """创建用户组。"""
     return require_geoserver().create_usergroup(name, service)
 
 
-def delete_usergroup(name: str, service: str | None = None) -> dict:
+def delete_usergroup(name: str, service: str | None = None) -> str:
     """删除用户组。"""
     return require_geoserver().delete_usergroup(name, service)
 
 
-def get_all_usergroups(service: str | None = None) -> list:
+def get_all_usergroups(service: str | None = None) -> dict:
     """列出所有用户组。"""
     return require_geoserver().get_all_usergroups(service)
 

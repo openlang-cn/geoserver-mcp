@@ -2,11 +2,45 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
-from geo import Style
+import importlib
+import os
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from typing import Any, Optional
 
 from ..utils import require_geoserver, resolve_storage_path
+
+
+def get_style_module() -> Any:
+    """延迟加载 geo.Style，避免模块导入阶段绑定运行环境。"""
+    return importlib.import_module("geo.Style")
+
+
+def _normalize_color_ramp(color_ramp, number_of_classes: Optional[int] = None):
+    if isinstance(color_ramp, str):
+        sns = importlib.import_module("seaborn")
+        rgb2hex = importlib.import_module("matplotlib.colors").rgb2hex
+        palette = sns.color_palette(color_ramp, int(number_of_classes or 5))
+        return [rgb2hex(color) for color in palette]
+    return color_ramp
+
+
+def _capture_style_xml(factory) -> str:
+    with TemporaryDirectory() as temp_dir:
+        previous_cwd = os.getcwd()
+        os.chdir(temp_dir)
+        try:
+            result = factory()
+            if isinstance(result, str):
+                return result
+
+            style_file = Path("style.sld")
+            if style_file.exists():
+                return style_file.read_text(encoding="utf-8")
+
+            raise ValueError("Style helper did not return XML or write style.sld.")
+        finally:
+            os.chdir(previous_cwd)
 
 
 def create_style(name: str, sld: str, workspace: Optional[str] = None) -> dict:
@@ -42,7 +76,7 @@ def get_styles(workspace: Optional[str] = None) -> dict:
     return require_geoserver().get_styles(workspace)
 
 
-def publish_style(layer_name: str, style_name: str, workspace: str) -> dict:
+def publish_style(layer_name: str, style_name: str, workspace: str) -> int:
     """给图层绑定样式。"""
     return require_geoserver().publish_style(layer_name, style_name, workspace)
 
@@ -54,7 +88,7 @@ def create_catagorized_featurestyle(
     workspace: Optional[str] = None,
     color_ramp: Optional[str] = None,
     geom_type: Optional[str] = None,
-) -> dict:
+) -> int:
     """创建分类矢量样式。"""
     return require_geoserver().create_catagorized_featurestyle(
         style_name,
@@ -73,7 +107,7 @@ def create_classified_featurestyle(
     workspace: Optional[str] = None,
     color_ramp: Optional[str] = None,
     geom_type: Optional[str] = None,
-) -> dict:
+) -> int:
     """创建分级矢量样式。"""
     return require_geoserver().create_classified_featurestyle(
         style_name,
@@ -85,7 +119,7 @@ def create_classified_featurestyle(
     )
 
 
-def create_coveragestyle(style_name: str, params: dict) -> dict:
+def create_coveragestyle(style_name: str, params: dict) -> int:
     """创建栅格样式。"""
     params = dict(params)
     raster_path = params.pop("raster_path", None) or params.pop("path", None)
@@ -104,7 +138,7 @@ def create_outline_featurestyle(
     workspace: Optional[str] = None,
     width: str = "2",
     geom_type: str = "polygon",
-) -> dict:
+) -> int:
     """创建仅轮廓样式。"""
     return require_geoserver().create_outline_featurestyle(
         style_name,
@@ -122,7 +156,10 @@ def style_catagorize_xml(
     geom_type: str = "polygon",
 ) -> str:
     """生成分类样式 SLD XML。"""
-    return Style.catagorize_xml(column_name, values, color_ramp, geom_type)
+    style_module = get_style_module()
+    return _capture_style_xml(
+        lambda: style_module.catagorize_xml(column_name, values, color_ramp, geom_type)
+    )
 
 
 def style_classified_xml(
@@ -133,7 +170,10 @@ def style_classified_xml(
     geom_type: str = "polygon",
 ) -> str:
     """生成分级样式 SLD XML。"""
-    return Style.classified_xml(style_name, column_name, values, color_ramp, geom_type)
+    style_module = get_style_module()
+    return _capture_style_xml(
+        lambda: style_module.classified_xml(style_name, column_name, values, color_ramp, geom_type)
+    )
 
 
 def style_coverage_style_colormapentry(
@@ -141,9 +181,16 @@ def style_coverage_style_colormapentry(
     min_value: float,
     max_value: float,
     number_of_classes: Optional[int] = None,
-):
+) -> str:
     """生成栅格色带条目。"""
-    return Style.coverage_style_colormapentry(color_ramp, min_value, max_value, number_of_classes)
+    style_module = get_style_module()
+    normalized_ramp = _normalize_color_ramp(color_ramp, number_of_classes)
+    return style_module.coverage_style_colormapentry(
+        normalized_ramp,
+        min_value,
+        max_value,
+        number_of_classes,
+    )
 
 
 def style_coverage_style_xml(
@@ -154,22 +201,27 @@ def style_coverage_style_xml(
     max_value,
     number_of_classes,
     opacity,
-):
+) -> str:
     """生成栅格样式 XML。"""
-    return Style.coverage_style_xml(
-        color_ramp,
-        style_name,
-        cmap_type,
-        min_value,
-        max_value,
-        number_of_classes,
-        opacity,
+    style_module = get_style_module()
+    normalized_ramp = _normalize_color_ramp(color_ramp, number_of_classes)
+    return _capture_style_xml(
+        lambda: style_module.coverage_style_xml(
+            normalized_ramp,
+            style_name,
+            cmap_type,
+            min_value,
+            max_value,
+            number_of_classes,
+            opacity,
+        )
     )
 
 
 def style_outline_only_xml(color: str, width: float, geom_type: str = "polygon") -> str:
     """生成轮廓样式 XML。"""
-    return Style.outline_only_xml(color, width, geom_type)
+    style_module = get_style_module()
+    return _capture_style_xml(lambda: style_module.outline_only_xml(color, width, geom_type))
 
 
 TOOLS = [

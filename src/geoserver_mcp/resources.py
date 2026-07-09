@@ -32,24 +32,32 @@ def get_layer_resource(workspace: str, layer: str) -> ResourceResult:
         return {"error": str(exc)}
 
 
-def get_wms_resource(request: str) -> ResourceResult:
+def get_wms_resource() -> ResourceResult:
     """返回 WMS 资源响应。"""
     geo = get_geoserver()
     if geo is None:
         return {"error": "未连接到 GeoServer。"}
     try:
-        return {"service": "WMS", "request": request, "capabilities": geo.get_wms_capabilities()}
+        return {
+            "service": "WMS",
+            "request": "GetCapabilities",
+            "capabilities": geo.get_wms_capabilities(),
+        }
     except Exception as exc:
         return {"error": str(exc)}
 
 
-def get_wfs_resource(request: str) -> ResourceResult:
+def get_wfs_resource() -> ResourceResult:
     """返回 WFS 资源响应。"""
     geo = get_geoserver()
     if geo is None:
         return {"error": "未连接到 GeoServer。"}
     try:
-        return {"service": "WFS", "request": request, "capabilities": geo.get_wfs_capabilities()}
+        return {
+            "service": "WFS",
+            "request": "GetCapabilities",
+            "capabilities": geo.get_wfs_capabilities(),
+        }
     except Exception as exc:
         return {"error": str(exc)}
 
@@ -57,8 +65,8 @@ def get_wfs_resource(request: str) -> ResourceResult:
 RESOURCE_REGISTRY = [
     ("geoserver://catalog/workspaces", get_workspaces_resource),
     ("geoserver://catalog/layers/{workspace}/{layer}", get_layer_resource),
-    ("geoserver://services/wms/{request}", get_wms_resource),
-    ("geoserver://services/wfs/{request}", get_wfs_resource),
+    ("geoserver://services/wms/GetCapabilities", get_wms_resource),
+    ("geoserver://services/wfs/GetCapabilities", get_wfs_resource),
 ]
 
 

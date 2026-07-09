@@ -62,6 +62,17 @@ class FakeGeo:
         self.calls.append(("publish_featurestore", kwargs))
         return 201
 
+    def get_version(self):
+        self.calls.append(("get_version",))
+        return {
+            "about": {
+                "resource": [
+                    {"@name": "GeoServer", "Version": "2.27.2"},
+                    {"@name": "GeoTools", "Version": "33.2"},
+                ]
+            }
+        }
+
     def publish_featurestore_sqlview(
         self,
         *,
@@ -226,3 +237,16 @@ def test_client_publish_and_service_update_helpers():
     assert published == 201
     assert service["method"] == "update_service"
     assert timed["method"] == "publish_time_dimension_to_coveragestore"
+
+
+def test_client_get_version_delegates_raw_vendor_payload():
+    client = GeoServerClient(FakeGeo())
+
+    assert client.get_version() == {
+        "about": {
+            "resource": [
+                {"@name": "GeoServer", "Version": "2.27.2"},
+                {"@name": "GeoTools", "Version": "33.2"},
+            ]
+        }
+    }

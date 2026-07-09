@@ -155,7 +155,7 @@ def create_coveragestore(workspace: str, name: str, params: dict) -> dict:
     return require_geoserver().create_coveragestore(workspace, name, **params)
 
 
-def delete_coveragestore(workspace: str, name: str) -> dict:
+def delete_coveragestore(workspace: str, name: str) -> str:
     """删除栅格存储。"""
     return require_geoserver().delete_coveragestore(name, workspace)
 
@@ -200,7 +200,7 @@ def create_layergroup(
     title: Optional[str] = None,
     abstract_text: Optional[str] = None,
     formats: str = "html",
-) -> dict:
+) -> str:
     """创建图层组。"""
     geo = require_geoserver()
     return geo.create_layergroup(
@@ -231,7 +231,7 @@ def add_layer_to_layergroup(
     layer_workspace: str,
     layergroup_name: str,
     layergroup_workspace: Optional[str] = None,
-) -> dict:
+) -> None:
     """向图层组添加图层。"""
     return require_geoserver().add_layer_to_layergroup(
         layer_name,
@@ -246,7 +246,7 @@ def remove_layer_from_layergroup(
     layer_workspace: str,
     layergroup_name: str,
     layergroup_workspace: Optional[str] = None,
-) -> dict:
+) -> None:
     """从图层组移除图层。"""
     return require_geoserver().remove_layer_from_layergroup(
         layer_name,
@@ -256,7 +256,7 @@ def remove_layer_from_layergroup(
     )
 
 
-def delete_layergroup(workspace: str, name: str) -> dict:
+def delete_layergroup(workspace: str, name: str) -> str:
     """删除图层组。"""
     return require_geoserver().delete_layergroup(name, workspace)
 
@@ -268,7 +268,7 @@ def update_layergroup(
     formats: str = "html",
     metadata: Optional[list] = None,
     keywords: Optional[list] = None,
-) -> dict:
+) -> str:
     """更新图层组元数据。"""
     return require_geoserver().update_layergroup(
         layergroup_name=layergroup_name,
@@ -280,7 +280,7 @@ def update_layergroup(
     )
 
 
-def publish_featurestore(workspace: str, store_name: str, params: dict) -> dict:
+def publish_featurestore(workspace: str, store_name: str, params: dict) -> int:
     """将要素存储发布为图层。"""
     return require_geoserver().publish_featurestore(store_name, params, workspace)
 
@@ -290,7 +290,7 @@ def publish_featurestore_sqlview(
     store_name: str,
     params: dict,
     sqlview_params: list,
-) -> dict:
+) -> int:
     """通过 SQL 视图发布图层。"""
     return require_geoserver().publish_featurestore_sqlview(
         store_name,
@@ -300,7 +300,7 @@ def publish_featurestore_sqlview(
     )
 
 
-def edit_featuretype(workspace: str, store_name: str, featuretype: str, kwargs: str) -> dict:
+def edit_featuretype(workspace: str, store_name: str, featuretype: str, kwargs: str) -> int:
     """更新要素类型配置。"""
     return require_geoserver().edit_featuretype(
         store_name,
@@ -310,12 +310,12 @@ def edit_featuretype(workspace: str, store_name: str, featuretype: str, kwargs: 
     )
 
 
-def get_featuretypes(workspace: str, store_name: str) -> dict:
+def get_featuretypes(workspace: str, store_name: str) -> list[str]:
     """列出要素类型。"""
     return require_geoserver().get_featuretypes(workspace, store_name)
 
 
-def get_feature_attribute(workspace: str, store_name: str, featuretype: str) -> dict:
+def get_feature_attribute(workspace: str, store_name: str, featuretype: str) -> list[str]:
     """获取要素属性定义。"""
     return require_geoserver().get_feature_attribute(featuretype, workspace, store_name)
 

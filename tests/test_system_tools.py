@@ -19,7 +19,7 @@ class FakeSystemClient:
 
     def get_version(self):
         self.calls.append(("get_version",))
-        return "2.26.0"
+        return {"about": {"resource": [{"@name": "GeoServer", "Version": "2.26.0"}]}}
 
     def reload(self):
         self.calls.append(("reload",))
@@ -75,7 +75,9 @@ def test_system_tools_delegate_and_register(monkeypatch):
     assert system.get_manifest() == {"manifest": True}
     assert system.get_status() == {"status": "ok"}
     assert system.get_system_status() == {"system": "ok"}
-    assert system.get_version() == "2.26.0"
+    assert system.get_version() == {
+        "about": {"resource": [{"@name": "GeoServer", "Version": "2.26.0"}]}
+    }
     assert system.reload_geoserver() == "reloaded"
     assert system.reset_geoserver() == "reset"
     assert system.update_service("wms", {"enabled": True}) == "updated"
