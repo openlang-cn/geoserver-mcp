@@ -5,6 +5,8 @@ from __future__ import annotations
 import ast
 import os
 
+from typing import Any
+
 from .connection import get_geoserver
 
 
@@ -32,3 +34,21 @@ def parse_mapping(value: str) -> dict:
     if not isinstance(parsed, dict):
         raise ValueError("参数必须能解析为字典。")
     return parsed
+
+
+def normalize_workspace_names(workspaces: Any) -> list[str]:
+    """将 GeoServer 工作区返回结果规范为名称列表。"""
+    if isinstance(workspaces, list):
+        return [item["name"] if isinstance(item, dict) else str(item) for item in workspaces]
+
+    if not isinstance(workspaces, dict):
+        return [str(workspaces)]
+
+    workspace_items = workspaces.get("workspaces", {}).get("workspace", [])
+    if isinstance(workspace_items, dict):
+        workspace_items = [workspace_items]
+
+    return [
+        item["name"] if isinstance(item, dict) and "name" in item else str(item)
+        for item in workspace_items
+    ]

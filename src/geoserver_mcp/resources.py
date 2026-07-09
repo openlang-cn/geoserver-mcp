@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict, TypeAlias
 
 from .connection import get_geoserver
+from .utils import normalize_workspace_names
 
 ResourceResult: TypeAlias = Dict[str, Any]
 
@@ -15,7 +16,7 @@ def get_workspaces_resource() -> ResourceResult:
     if geo is None:
         return {"error": "未连接到 GeoServer。"}
     try:
-        return {"workspaces": geo.get_workspaces()}
+        return {"workspaces": normalize_workspace_names(geo.get_workspaces())}
     except Exception as exc:
         return {"error": str(exc)}
 

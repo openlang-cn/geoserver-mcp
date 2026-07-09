@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
-from ..utils import parse_mapping, require_geoserver, resolve_storage_path
+from ..utils import normalize_workspace_names, parse_mapping, require_geoserver, resolve_storage_path
 
 
 def list_workspaces() -> list[str]:
     """列出 GeoServer 中可用的工作区。"""
-    return require_geoserver().get_workspaces()
+    return normalize_workspace_names(require_geoserver().get_workspaces())
 
 
 def create_workspace(workspace: str) -> Dict[str, Any]:

@@ -2,15 +2,26 @@
 
 from __future__ import annotations
 
+import importlib
 import logging
 import os
+import warnings
 from typing import Optional
-
-from geo.Geoserver import Geoserver
 
 from .client import GeoServerClient
 
 logger = logging.getLogger("geoserver-mcp")
+
+
+def get_geoserver_class():
+    """延迟导入第三方 Geoserver 类，并抑制其已知的语法告警。"""
+    warnings.filterwarnings(
+        "ignore",
+        message=r"invalid escape sequence '\\w'",
+        category=SyntaxWarning,
+        module=r"geo\.Geoserver",
+    )
+    return importlib.import_module("geo.Geoserver").Geoserver
 
 
 def get_geoserver() -> Optional[GeoServerClient]:
@@ -20,7 +31,8 @@ def get_geoserver() -> Optional[GeoServerClient]:
     password = os.environ.get("GEOSERVER_PASSWORD", "geoserver")
 
     try:
-        geo_client = Geoserver(url, username=username, password=password)
+        geoserver_class = get_geoserver_class()
+        geo_client = geoserver_class(url, username=username, password=password)
         logger.info("已连接到 GeoServer：%s", url)
         return GeoServerClient(geo_client)
     except Exception as exc:

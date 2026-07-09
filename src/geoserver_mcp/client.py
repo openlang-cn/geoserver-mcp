@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional
+from typing import TYPE_CHECKING, Any, Dict, Iterable, Optional
 
-from geo.Geoserver import Geoserver
+if TYPE_CHECKING:
+    from geo.Geoserver import Geoserver
 
 
 class GeoServerClient:

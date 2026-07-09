@@ -7,6 +7,10 @@ class FakeCatalogClient:
     def __init__(self):
         self.calls = []
 
+    def get_workspaces(self):
+        self.calls.append(("get_workspaces",))
+        return {"workspaces": {"workspace": [{"name": "fire_monitor"}, {"name": "demo"}]}}
+
     def get_workspace(self, workspace):
         self.calls.append(("get_workspace", workspace))
         return {"workspace": workspace}
@@ -36,10 +40,12 @@ def test_workspace_tools_delegate(monkeypatch):
     fake = FakeCatalogClient()
     monkeypatch.setattr(catalog, "require_geoserver", lambda: fake)
 
+    assert catalog.list_workspaces() == ["fire_monitor", "demo"]
     assert catalog.get_workspace("demo") == {"workspace": "demo"}
     assert catalog.get_default_workspace() == {"workspace": {"name": "demo"}}
     assert catalog.set_default_workspace("demo") == "ok"
     assert fake.calls == [
+        ("get_workspaces",),
         ("get_workspace", "demo"),
         ("get_default_workspace",),
         ("set_default_workspace", "demo"),
