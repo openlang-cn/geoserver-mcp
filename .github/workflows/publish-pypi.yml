@@ -46,5 +46,19 @@ jobs:
           name: python-package-distributions
           path: dist/
 
-      - name: Publish package distributions to PyPI
+      - name: Publish package distributions to PyPI via Trusted Publishing
+        id: publish_trusted
         uses: pypa/gh-action-pypi-publish@release/v1
+        continue-on-error: true
+        with:
+          attestations: false
+          skip-existing: true
+
+      - name: Publish package distributions to PyPI via API token fallback
+        if: steps.publish_trusted.outcome == 'failure'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          attestations: false
+          skip-existing: true
