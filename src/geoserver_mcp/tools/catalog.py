@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from ..utils import (
     normalize_workspace_names,
@@ -17,7 +17,7 @@ def list_workspaces() -> list[str]:
     return normalize_workspace_names(require_geoserver().get_workspaces())
 
 
-def create_workspace(workspace: str) -> Dict[str, Any]:
+def create_workspace(workspace: str) -> dict[str, Any]:
     """在 GeoServer 中创建新的工作区。"""
     geo = require_geoserver()
     if not workspace:
@@ -44,17 +44,17 @@ def set_default_workspace(workspace: str) -> str:
     return require_geoserver().set_default_workspace(workspace)
 
 
-def get_layer_info(workspace: str, layer: str) -> Dict[str, Any]:
+def get_layer_info(workspace: str, layer: str) -> dict[str, Any]:
     """获取图层详情。"""
     return require_geoserver().get_layer(layer, workspace)
 
 
-def list_layers(workspace: Optional[str] = None) -> Any:
+def list_layers(workspace: str | None = None) -> Any:
     """列出图层，可按工作区过滤。"""
     return require_geoserver().get_layers(workspace)
 
 
-def create_layer(workspace: str, layer: str, data_store: str, source: str) -> Dict[str, Any]:
+def create_layer(workspace: str, layer: str, data_store: str, source: str) -> dict[str, Any]:
     """基于已有数据存储发布图层。"""
     geo = require_geoserver()
     if not workspace or not layer or not data_store or not source:
@@ -70,7 +70,7 @@ def create_layer(workspace: str, layer: str, data_store: str, source: str) -> Di
     }
 
 
-def delete_resource(resource_type: str, workspace: str, name: str) -> Dict[str, Any]:
+def delete_resource(resource_type: str, workspace: str, name: str) -> dict[str, Any]:
     """按资源类型删除 GeoServer 资源。"""
     geo = require_geoserver()
     valid_types = {"workspace", "layer", "datastore", "style", "coverage", "featurestore"}
@@ -102,9 +102,9 @@ def delete_resource(resource_type: str, workspace: str, name: str) -> Dict[str, 
 def query_features(
     workspace: str,
     layer: str,
-    filter: Optional[str] = None,
-    properties: Optional[list[str]] = None,
-    max_features: Optional[int] = None,
+    filter: str | None = None,
+    properties: list[str] | None = None,
+    max_features: int | None = None,
 ) -> dict:
     """查询矢量图层要素。"""
     return require_geoserver().query_features(workspace, layer, filter, properties, max_features)
@@ -112,8 +112,8 @@ def query_features(
 
 def generate_map(
     layers: list[str],
-    styles: Optional[list[str]] = None,
-    bbox: Optional[list[float]] = None,
+    styles: list[str] | None = None,
+    bbox: list[float] | None = None,
     width: int = 1024,
     height: int = 768,
     format: str = "image/png",
@@ -194,11 +194,11 @@ def create_layergroup(
     workspace: str,
     name: str,
     layers: list,
-    metadata: Optional[list[dict]] = None,
-    keywords: Optional[list[str]] = None,
+    metadata: list[dict] | None = None,
+    keywords: list[str] | None = None,
     mode: str = "single",
-    title: Optional[str] = None,
-    abstract_text: Optional[str] = None,
+    title: str | None = None,
+    abstract_text: str | None = None,
     formats: str = "html",
 ) -> str:
     """创建图层组。"""
@@ -230,7 +230,7 @@ def add_layer_to_layergroup(
     layer_name: str,
     layer_workspace: str,
     layergroup_name: str,
-    layergroup_workspace: Optional[str] = None,
+    layergroup_workspace: str | None = None,
 ) -> None:
     """向图层组添加图层。"""
     return require_geoserver().add_layer_to_layergroup(
@@ -245,7 +245,7 @@ def remove_layer_from_layergroup(
     layer_name: str,
     layer_workspace: str,
     layergroup_name: str,
-    layergroup_workspace: Optional[str] = None,
+    layergroup_workspace: str | None = None,
 ) -> None:
     """从图层组移除图层。"""
     return require_geoserver().remove_layer_from_layergroup(
@@ -263,11 +263,11 @@ def delete_layergroup(workspace: str, name: str) -> str:
 
 def update_layergroup(
     layergroup_name: str,
-    title: Optional[str] = None,
-    abstract_text: Optional[str] = None,
+    title: str | None = None,
+    abstract_text: str | None = None,
     formats: str = "html",
-    metadata: Optional[list] = None,
-    keywords: Optional[list] = None,
+    metadata: list | None = None,
+    keywords: list | None = None,
 ) -> str:
     """更新图层组元数据。"""
     return require_geoserver().update_layergroup(

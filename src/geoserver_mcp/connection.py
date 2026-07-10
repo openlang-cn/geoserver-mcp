@@ -6,7 +6,6 @@ import importlib
 import logging
 import os
 import warnings
-from typing import Optional
 
 from .client import GeoServerClient
 
@@ -24,7 +23,7 @@ def get_geoserver_class():
     return importlib.import_module("geo.Geoserver").Geoserver
 
 
-def get_geoserver() -> Optional[GeoServerClient]:
+def get_geoserver() -> GeoServerClient | None:
     """通过环境变量创建 GeoServer 客户端。"""
     url = os.environ.get("GEOSERVER_URL", "http://localhost:8080/geoserver")
     username = os.environ.get("GEOSERVER_USER", "admin")

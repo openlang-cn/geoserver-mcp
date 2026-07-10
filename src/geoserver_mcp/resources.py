@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, TypeAlias
+from typing import Any, TypeAlias
 
 from .connection import get_geoserver
 from .utils import normalize_workspace_names
 
-ResourceResult: TypeAlias = Dict[str, Any]
+ResourceResult: TypeAlias = dict[str, Any]
 
 
 def get_workspaces_resource() -> ResourceResult:

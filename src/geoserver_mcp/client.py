@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Iterable, Optional
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from geo.Geoserver import Geoserver
@@ -26,7 +27,7 @@ class GeoServerClient:
         url = f"{self.service_url}{path}"
         return self._geo._requests(method=method, url=url, **kwargs)
 
-    def get_wms_capabilities(self) -> Dict[str, Any]:
+    def get_wms_capabilities(self) -> dict[str, Any]:
         response = self.request(
             "get",
             "/ows",
@@ -34,7 +35,7 @@ class GeoServerClient:
         )
         return {"content": response.text, "status_code": response.status_code}
 
-    def get_wfs_capabilities(self) -> Dict[str, Any]:
+    def get_wfs_capabilities(self) -> dict[str, Any]:
         response = self.request(
             "get",
             "/ows",
@@ -42,7 +43,7 @@ class GeoServerClient:
         )
         return {"content": response.text, "status_code": response.status_code}
 
-    def create_style(self, name: str, sld: str, workspace: Optional[str] = None) -> int:
+    def create_style(self, name: str, sld: str, workspace: str | None = None) -> int:
         return self._geo.upload_style(path=sld, name=name, workspace=workspace)
 
     def create_datastore(self, name: str, workspace: str, **params: Any):
@@ -73,7 +74,7 @@ class GeoServerClient:
     def create_shp_datastore(self, workspace: str, name: str, file_path: str):
         return self._geo.create_shp_datastore(file_path, store_name=name, workspace=workspace)
 
-    def delete_datastore(self, name: str, workspace: Optional[str] = None):
+    def delete_datastore(self, name: str, workspace: str | None = None):
         if not workspace:
             raise ValueError("删除 datastore 时必须提供 workspace。")
         return self.request(
@@ -82,10 +83,10 @@ class GeoServerClient:
             params={"recurse": "true"},
         )
 
-    def delete_coverage(self, name: str, workspace: Optional[str] = None):
+    def delete_coverage(self, name: str, workspace: str | None = None):
         return self._geo.delete_coveragestore(name, workspace=workspace)
 
-    def delete_featurestore(self, name: str, workspace: Optional[str] = None):
+    def delete_featurestore(self, name: str, workspace: str | None = None):
         return self._geo.delete_featurestore(name, workspace=workspace)
 
     def create_layer(self, workspace: str, data_store: str, layer: str, source: str):
@@ -108,17 +109,17 @@ class GeoServerClient:
     def get_featurestore(self, store_name: str, workspace: str):
         return self._geo.get_featurestore(store_name, workspace)
 
-    def get_style(self, style_name: str, workspace: Optional[str] = None):
+    def get_style(self, style_name: str, workspace: str | None = None):
         return self._geo.get_style(style_name, workspace=workspace)
 
-    def get_styles(self, workspace: Optional[str] = None):
+    def get_styles(self, workspace: str | None = None):
         return self._geo.get_styles(workspace=workspace)
 
     def upload_style(
         self,
         path: str,
-        name: Optional[str] = None,
-        workspace: Optional[str] = None,
+        name: str | None = None,
+        workspace: str | None = None,
         sld_version: str = "1.0.0",
     ):
         return self._geo.upload_style(
@@ -132,11 +133,11 @@ class GeoServerClient:
         self,
         workspace: str,
         layer: str,
-        filter: Optional[str] = None,
-        properties: Optional[list[str]] = None,
-        max_features: Optional[int] = None,
-    ) -> Dict[str, Any]:
-        params: Dict[str, Any] = {
+        filter: str | None = None,
+        properties: list[str] | None = None,
+        max_features: int | None = None,
+    ) -> dict[str, Any]:
+        params: dict[str, Any] = {
             "service": "WFS",
             "version": "1.0.0",
             "request": "GetFeature",
@@ -157,12 +158,12 @@ class GeoServerClient:
     def generate_map(
         self,
         layers: list[str],
-        styles: Optional[list[str]] = None,
-        bbox: Optional[list[float]] = None,
+        styles: list[str] | None = None,
+        bbox: list[float] | None = None,
         width: int = 1024,
         height: int = 768,
         format: str = "image/png",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         if bbox is None:
             bbox = [-180, -90, 180, 90]
 
@@ -187,8 +188,8 @@ class GeoServerClient:
     def publish_featurestore_sqlview(
         self,
         store_name: str,
-        params: Dict[str, Any],
-        sqlview_params: Iterable[Dict[str, Any]],
+        params: dict[str, Any],
+        sqlview_params: Iterable[dict[str, Any]],
         workspace: str,
     ):
         return self._geo.publish_featurestore_sqlview(
@@ -203,7 +204,7 @@ class GeoServerClient:
             workspace=workspace,
         )
 
-    def publish_featurestore(self, store_name: str, params: Dict[str, Any], workspace: str):
+    def publish_featurestore(self, store_name: str, params: dict[str, Any], workspace: str):
         return self._geo.publish_featurestore(
             store_name=store_name,
             pg_table=params["table"],
@@ -215,13 +216,13 @@ class GeoServerClient:
             cqlfilter=params.get("cqlfilter"),
         )
 
-    def update_service(self, service: str, options: Dict[str, Any]):
+    def update_service(self, service: str, options: dict[str, Any]):
         return self._geo.update_service(service, **options)
 
     def publish_time_dimension_to_coveragestore(
         self,
-        store_name: Optional[str] = None,
-        workspace: Optional[str] = None,
+        store_name: str | None = None,
+        workspace: str | None = None,
         presentation: str = "LIST",
         units: str = "ISO8601",
         default_value: str = "MINIMUM",

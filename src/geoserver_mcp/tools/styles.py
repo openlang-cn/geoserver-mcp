@@ -6,7 +6,7 @@ import importlib
 import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any, Optional
+from typing import Any
 
 from ..utils import require_geoserver, resolve_storage_path
 
@@ -16,7 +16,7 @@ def get_style_module() -> Any:
     return importlib.import_module("geo.Style")
 
 
-def _normalize_color_ramp(color_ramp, number_of_classes: Optional[int] = None):
+def _normalize_color_ramp(color_ramp, number_of_classes: int | None = None):
     if isinstance(color_ramp, str):
         sns = importlib.import_module("seaborn")
         rgb2hex = importlib.import_module("matplotlib.colors").rgb2hex
@@ -43,7 +43,7 @@ def _capture_style_xml(factory) -> str:
             os.chdir(previous_cwd)
 
 
-def create_style(name: str, sld: str, workspace: Optional[str] = None) -> dict:
+def create_style(name: str, sld: str, workspace: str | None = None) -> dict:
     """创建样式。"""
     result = require_geoserver().create_style(name, sld, workspace)
     return {"status": "success", "name": name, "workspace": workspace or "global", "result": result}
@@ -51,8 +51,8 @@ def create_style(name: str, sld: str, workspace: Optional[str] = None) -> dict:
 
 def upload_style(
     path: str,
-    name: Optional[str] = None,
-    workspace: Optional[str] = None,
+    name: str | None = None,
+    workspace: str | None = None,
     sld_version: str = "1.0.0",
 ) -> dict:
     """上传样式文件或 SLD XML。"""
@@ -66,12 +66,12 @@ def upload_style(
     return {"status": "success", "name": name, "workspace": workspace or "global", "result": result}
 
 
-def get_style(name: str, workspace: Optional[str] = None) -> dict:
+def get_style(name: str, workspace: str | None = None) -> dict:
     """获取单个样式详情。"""
     return require_geoserver().get_style(name, workspace)
 
 
-def get_styles(workspace: Optional[str] = None) -> dict:
+def get_styles(workspace: str | None = None) -> dict:
     """列出样式。"""
     return require_geoserver().get_styles(workspace)
 
@@ -85,9 +85,9 @@ def create_catagorized_featurestyle(
     style_name: str,
     column_name: str,
     column_distinct_values: str,
-    workspace: Optional[str] = None,
-    color_ramp: Optional[str] = None,
-    geom_type: Optional[str] = None,
+    workspace: str | None = None,
+    color_ramp: str | None = None,
+    geom_type: str | None = None,
 ) -> int:
     """创建分类矢量样式。"""
     return require_geoserver().create_catagorized_featurestyle(
@@ -104,9 +104,9 @@ def create_classified_featurestyle(
     style_name: str,
     column_name: str,
     column_distinct_values: str,
-    workspace: Optional[str] = None,
-    color_ramp: Optional[str] = None,
-    geom_type: Optional[str] = None,
+    workspace: str | None = None,
+    color_ramp: str | None = None,
+    geom_type: str | None = None,
 ) -> int:
     """创建分级矢量样式。"""
     return require_geoserver().create_classified_featurestyle(
@@ -135,7 +135,7 @@ def create_coveragestyle(style_name: str, params: dict) -> int:
 def create_outline_featurestyle(
     style_name: str,
     outline_color: str,
-    workspace: Optional[str] = None,
+    workspace: str | None = None,
     width: str = "2",
     geom_type: str = "polygon",
 ) -> int:
@@ -152,7 +152,7 @@ def create_outline_featurestyle(
 def style_catagorize_xml(
     column_name: str,
     values: list,
-    color_ramp: Optional[str] = None,
+    color_ramp: str | None = None,
     geom_type: str = "polygon",
 ) -> str:
     """生成分类样式 SLD XML。"""
@@ -166,7 +166,7 @@ def style_classified_xml(
     style_name: str,
     column_name: str,
     values: list,
-    color_ramp: Optional[str] = None,
+    color_ramp: str | None = None,
     geom_type: str = "polygon",
 ) -> str:
     """生成分级样式 SLD XML。"""
@@ -180,7 +180,7 @@ def style_coverage_style_colormapentry(
     color_ramp,
     min_value: float,
     max_value: float,
-    number_of_classes: Optional[int] = None,
+    number_of_classes: int | None = None,
 ) -> str:
     """生成栅格色带条目。"""
     style_module = get_style_module()

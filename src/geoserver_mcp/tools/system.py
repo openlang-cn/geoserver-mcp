@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from ..utils import require_geoserver
 
 
@@ -43,8 +41,8 @@ def update_service(service: str, options: dict) -> str:
 
 
 def publish_time_dimension_to_coveragestore(
-        store_name: Optional[str] = None,
-        workspace: Optional[str] = None,
+        store_name: str | None = None,
+        workspace: str | None = None,
         presentation: str = "LIST",
         units: str = "ISO8601",
         default_value: str = "MINIMUM",
