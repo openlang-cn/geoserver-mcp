@@ -1,0 +1,4 @@
+interface:
+  display_name: "GeoServer MCP Usage"
+  short_description: "Manage GeoServer via MCP tools"
+  default_prompt: "Connect to a GeoServer MCP server and help me manage GeoServer"

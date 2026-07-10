@@ -1,7 +1,13 @@
+# ============================================================
+# GeoServer MCP — pyproject.toml
+# ============================================================
+
+# ---------- 构建系统 ----------
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+# ---------- 项目元数据 ----------
 [project]
 name = "open-geoserver-mcp"
 version = "1.0.2"
@@ -22,47 +28,86 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
+
+# 运行时依赖（精确版本保证可重复构建；升级时需同步更新 CHANGELOG.md）
 dependencies = [
     "mcp==1.28.1",
     "geoserver-rest==2.10.0",
-    "seaborn",
+    "seaborn>=0.13,<1",
 ]
 
+# 开发/测试可选依赖
 [project.optional-dependencies]
 dev = [
-    "mypy>=1.11,<2",
+    "mypy>=2,<3",
     "pytest>=8,<10",
-    "pytest-cov>=5,<7",
-    "ruff>=0.6,<1",
+    "pytest-cov>=7,<8",
+    "ruff>=0.15,<1",
 ]
 
+# CLI 入口
 [project.scripts]
 geoserver-mcp = "geoserver_mcp.main:main"
 
+# 项目链接
 [project.urls]
 Homepage = "https://github.com/openlang-cn/geoserver-mcp"
 Repository = "https://github.com/openlang-cn/geoserver-mcp"
 Issues = "https://github.com/openlang-cn/geoserver-mcp/issues"
 Changelog = "https://github.com/openlang-cn/geoserver-mcp/blob/main/CHANGELOG.md"
 
+# ---------- Hatch 构建配置 ----------
 [tool.hatch.metadata]
 allow-direct-references = true
+
+[tool.hatch.build.targets.sdist]
+packages = ["src/geoserver_mcp"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/geoserver_mcp"]
 
+# ---------- pytest 配置 ----------
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = ["-ra", "-q", "--strict-markers"]  # 显示所有失败原因 + 安静模式 + 严格标记
 
+# ---------- Ruff 代码检查 & 格式化 ----------
 [tool.ruff]
 target-version = "py310"
 line-length = 100
 extend-exclude = ["dist", "docs"]
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]
+select = [
+    "E",   # pycodestyle: 代码风格错误
+    "F",   # pyflakes: 逻辑错误检测
+    "I",   # isort: import 排序
+    "UP",  # pyupgrade: 现代 Python 语法升级提示
+    "B",   # flake8-bugbear: 常见 bug 检测
+    "C4",  # flake8-comprehensions: 推导式最佳实践
+    "SIM", # flake8-simplify: 简化表达式建议
+    "RUF", # ruff 内置规则
+]
 
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+# ---------- 覆盖率配置 ----------
+[tool.coverage.run]
+source = ["src/geoserver_mcp"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+exclude_also = [
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+# ---------- MyPy 类型检查 ----------
 [tool.mypy]
 python_version = "3.10"
 files = ["src/geoserver_mcp"]

@@ -12,6 +12,13 @@ GeoServer MCP is an MCP (Model Context Protocol) server for GeoServer. It wraps 
 - Expose MCP resources and tools over `stdio`, `streamable-http`, and `sse`.
 - Support local development, `uvx` launch from PyPI, Docker deployment, and 1Panel deployment.
 
+## Prerequisites
+
+Before using GeoServer MCP, you must have a GeoServer instance already deployed and running:
+
+- A GeoServer service with REST API enabled and accessible over the network.
+- Valid credentials (username and password) for the GeoServer REST API.
+
 ## Quick Start
 
 Requirements:
