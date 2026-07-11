@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from xml.sax.saxutils import escape as _xml_escape
+
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any
 
@@ -193,6 +195,26 @@ class GeoServerClient:
         url = f"{self.service_url}/wms?{query_string}"
         return {"url": url, "params": params}
 
+    def edit_featuretype(
+        self,
+        store_name: str,
+        workspace: str | None,
+        pg_table: str,
+        **kwargs: Any,
+    ):
+        return self._geo.edit_featuretype(
+            store_name=store_name,
+            workspace=workspace,
+            pg_table=pg_table,
+            name=_xml_escape(kwargs.get("name", pg_table)),
+            title=_xml_escape(kwargs.get("title", pg_table)),
+            abstract=_xml_escape(kwargs["abstract"]) if kwargs.get("abstract") else None,
+            keywords=[_xml_escape(k) for k in kwargs["keywords"]]
+            if kwargs.get("keywords")
+            else None,
+            recalculate=kwargs.get("recalculate"),
+        )
+
     def publish_featurestore_sqlview(
         self,
         store_name: str,
@@ -201,9 +223,9 @@ class GeoServerClient:
         workspace: str,
     ):
         return self._geo.publish_featurestore_sqlview(
-            name=params["name"],
+            name=_xml_escape(params["name"]),
             store_name=store_name,
-            sql=params["sql"],
+            sql=_xml_escape(params["sql"]),
             parameters=list(sqlview_params),
             key_column=params.get("key_column"),
             geom_name=params.get("geom_name", "geom"),
@@ -213,15 +235,21 @@ class GeoServerClient:
         )
 
     def publish_featurestore(self, store_name: str, params: dict[str, Any], workspace: str):
+        keywords = params.get("keywords")
+        if keywords:
+            keywords = [_xml_escape(k) for k in keywords]
+        cqlfilter = params.get("cqlfilter")
+        if cqlfilter:
+            cqlfilter = _xml_escape(cqlfilter)
         return self._geo.publish_featurestore(
             store_name=store_name,
-            pg_table=params["table"],
+            pg_table=_xml_escape(params["table"]),
             workspace=workspace,
-            title=params.get("title"),
+            title=_xml_escape(params.get("title", "")) if params.get("title") else None,
             advertised=params.get("advertised", True),
-            abstract=params.get("abstract"),
-            keywords=params.get("keywords"),
-            cqlfilter=params.get("cqlfilter"),
+            abstract=_xml_escape(params["abstract"]) if params.get("abstract") else None,
+            keywords=keywords,
+            cqlfilter=cqlfilter,
         )
 
     def update_service(self, service: str, options: dict[str, Any]):
