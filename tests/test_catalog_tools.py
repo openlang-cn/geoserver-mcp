@@ -129,7 +129,7 @@ def test_create_workspace_detects_existing_workspace_from_normalized_names(monke
 
     result = catalog.create_workspace("demo")
 
-    assert result == {"status": "info", "workspace": "demo", "message": "工作区“demo”已存在。"}
+    assert result == {"status": "info", "workspace": "demo", "message": "工作区‘demo’已存在。"}
     assert fake.calls == [("get_workspaces",)]
 
 

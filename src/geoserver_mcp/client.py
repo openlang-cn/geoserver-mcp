@@ -244,9 +244,9 @@ class GeoServerClient:
             store_name=store_name,
             pg_table=_xml_escape(params["table"]),
             workspace=workspace,
-            title=_xml_escape(params.get("title", "")) if params.get("title") else None,
+            title=_xml_escape(params.get("title")) if params.get("title") is not None else None,
             advertised=params.get("advertised", True),
-            abstract=_xml_escape(params["abstract"]) if params.get("abstract") else None,
+            abstract=_xml_escape(params.get("abstract")) if params.get("abstract") is not None else None,
             keywords=keywords,
             cqlfilter=cqlfilter,
         )

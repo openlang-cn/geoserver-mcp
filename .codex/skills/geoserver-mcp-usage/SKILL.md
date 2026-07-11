@@ -114,6 +114,8 @@ GeoServer resources form a strict hierarchy. Read `references/domain-model.md` f
 
 ## Tool Categories
 
+> **MCP 工具现已包含完整的参数描述。** 每个工具的参数都通过 `Annotated[type, Field(description="...")]` 标注了中文说明，调用时 AI 客户端可直接从 `inputSchema` 中获取每个参数的含义、类型和约束，无需额外查阅文档。
+
 ### Catalog Tools (workspaces, stores, layers, layer groups)
 
 | Task | Primary Tool | Notes |
