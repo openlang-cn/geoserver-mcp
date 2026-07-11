@@ -126,7 +126,10 @@ def query_features(
     workspace: Annotated[str, Field(description="图层所在工作区名称")],
     layer: Annotated[str, Field(description="图层名称")],
     filter: Annotated[str | None, Field(description='CQL 过滤器，如 "population > 10000"')] = None,
-    properties: Annotated[list[str] | None, Field(description='要返回的属性列表，如 ["name", "population"]')] = None,
+    properties: Annotated[
+        list[str] | None,
+        Field(description='要返回的属性列表，如 ["name", "population"]')
+    ] = None,
     max_features: Annotated[int | None, Field(description="最大返回要素数")] = None,
 ) -> dict:
     """查询矢量图层要素。"""
@@ -150,7 +153,13 @@ def generate_map(
 def create_datastore(
     workspace: Annotated[str, Field(description="工作区名称")],
     name: Annotated[str, Field(description="数据存储名称")],
-    params: Annotated[dict, Field(description="存储参数，必须包含 path(文件路径)或 url(WFS URL)；可选 overwrite(是否覆盖，默认 False)")],
+    params: Annotated[
+        dict,
+        Field(
+            description="存储参数，必须包含 path(文件路径)或 url(WFS URL)；"
+            "可选 overwrite(是否覆盖，默认 False)"
+        )
+    ],
 ) -> dict:
     """创建文件型数据存储。"""
     params = dict(params)
@@ -162,7 +171,15 @@ def create_datastore(
 def create_featurestore(
     workspace: Annotated[str, Field(description="工作区名称")],
     name: Annotated[str, Field(description="要素存储名称")],
-    params: Annotated[dict, Field(description="数据库连接参数，可用键：host(默认 localhost)、port(默认 5432)、db(默认 postgres)、pg_user(默认 postgres)、pg_password(默认 admin)、schema(默认 public)")],
+    params: Annotated[
+        dict,
+        Field(
+            description="数据库连接参数，可用键：host(默认 localhost)、"
+            "port(默认 5432)、db(默认 postgres)、"
+            "pg_user(默认 postgres)、pg_password(默认 admin)、"
+            "schema(默认 public)"
+        )
+    ],
 ) -> dict:
     """创建数据库要素存储。"""
     return require_geoserver().create_featurestore(name, workspace=workspace, **params)
@@ -191,7 +208,10 @@ def create_shp_datastore(
 def create_coveragestore(
     workspace: Annotated[str, Field(description="工作区名称")],
     name: Annotated[str, Field(description="栅格存储名称")],
-    params: Annotated[dict, Field(description="栅格参数，需包含 path(文件路径)；可选 file_type(默认 GeoTIFF)、layer_name")],
+    params: Annotated[
+        dict,
+        Field(description="栅格参数，需包含 path(文件路径)；可选 file_type(默认 GeoTIFF)、layer_name")
+    ],
 ) -> dict:
     """创建栅格存储。"""
     params = dict(params)
@@ -258,9 +278,15 @@ def create_layergroup(
     workspace: Annotated[str, Field(description="工作区名称")],
     name: Annotated[str, Field(description="图层组名称")],
     layers: Annotated[list, Field(description='图层列表，每个元素为 {"name": "图层名", "workspace": "工作区"}')],
-    metadata: Annotated[list[dict] | None, Field(description='元数据列表，如 [{"key": "k", "value": "v"}]')] = None,
+    metadata: Annotated[
+        list[dict] | None,
+        Field(description='元数据列表，如 [{"key": "k", "value": "v"}]')
+    ] = None,
     keywords: Annotated[list[str] | None, Field(description="关键词列表")] = None,
-    mode: Annotated[str, Field(description="图层组模式：single(单一)、opaque(不透明)、tree(树形)，默认 single")] = "single",
+    mode: Annotated[
+        str,
+        Field(description="图层组模式：single(单一)、opaque(不透明)、tree(树形)，默认 single")
+    ] = "single",
     title: Annotated[str | None, Field(description="标题，默认使用 name")] = None,
     abstract_text: Annotated[str | None, Field(description="摘要描述")] = None,
     formats: Annotated[str, Field(description='输出格式列表，逗号分隔，如 "html,png"，默认 html')] = "html",
@@ -357,7 +383,10 @@ def update_layergroup(
 def publish_featurestore(
     workspace: Annotated[str, Field(description="工作区名称")],
     store_name: Annotated[str, Field(description="要素存储名称")],
-    params: Annotated[dict, Field(description="图层元数据，必须包含 table(表名)；可选 title、advertised、abstract、keywords、cqlfilter")],
+    params: Annotated[
+        dict,
+        Field(description="图层元数据，必须包含 table(表名)；可选 title、advertised、abstract、keywords、cqlfilter")
+    ],
 ) -> int:
     """将要素存储发布为图层。"""
     return require_geoserver().publish_featurestore(store_name, params, workspace)
@@ -366,8 +395,22 @@ def publish_featurestore(
 def publish_featurestore_sqlview(
     workspace: Annotated[str, Field(description="工作区名称")],
     store_name: Annotated[str, Field(description="要素存储名称")],
-    params: Annotated[dict, Field(description="SQL 视图元数据，必须包含 name(视图名)、sql(SQL 查询)；可选 key_column、geom_name(默认 geom)、geom_type(默认 Geometry)、srid(默认 4326)")],
-    sqlview_params: Annotated[list, Field(description='SQL 视图参数列表，每个元素为 {"name": "参数名", "defaultValue": "默认值", "regexpValidator": "正则校验"}')],
+    params: Annotated[
+        dict,
+        Field(
+            description="SQL 视图元数据，必须包含 name(视图名)、sql(SQL 查询)；"
+            "可选 key_column、geom_name(默认 geom)、"
+            "geom_type(默认 Geometry)、srid(默认 4326)"
+        )
+    ],
+    sqlview_params: Annotated[
+        list,
+        Field(
+            description="SQL 视图参数列表，每个元素为 "
+            "{\"name\":\"参数名\",\"defaultValue\":\"默认值\","
+            "\"regexpValidator\":\"正则校验\"}"
+        )
+    ],
 ) -> int:
     """通过 SQL 视图发布图层。"""
     return require_geoserver().publish_featurestore_sqlview(
@@ -382,7 +425,13 @@ def edit_featuretype(
     workspace: Annotated[str, Field(description="工作区名称")],
     store_name: Annotated[str, Field(description="要素存储名称")],
     featuretype: Annotated[str, Field(description="要素类型名称（表名）")],
-    kwargs: Annotated[str, Field(description="要更新的键值对 JSON 字符串，如 {\"title\":\"新标题\",\"abstract\":\"新摘要\"}")],
+    kwargs: Annotated[
+        str,
+        Field(
+            description="要更新的键值对 JSON 字符串，"
+            "如 {\"title\":\"新标题\",\"abstract\":\"新摘要\"}"
+        )
+    ],
 ) -> int:
     """更新要素类型配置。"""
     return require_geoserver().edit_featuretype(

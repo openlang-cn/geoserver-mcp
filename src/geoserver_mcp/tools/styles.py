@@ -136,7 +136,14 @@ def create_classified_featurestyle(
 
 def create_coveragestyle(
     style_name: Annotated[str, Field(description="样式名称")],
-    params: Annotated[dict, Field(description="栅格样式参数，必须包含 raster_path(栅格文件路径)；可选 color_ramp(默认 RdYlGn_r)、cmap_type(默认 ramp)、number_of_classes(默认 5)、opacity(默认 1)")],
+    params: Annotated[
+        dict,
+        Field(
+            description="栅格样式参数，必须包含 raster_path(栅格文件路径)；"
+            "可选 color_ramp(默认 RdYlGn_r)、cmap_type(默认 ramp)、"
+            "number_of_classes(默认 5)、opacity(默认 1)"
+        )
+    ],
 ) -> int:
     """创建栅格样式。"""
     params = dict(params)
