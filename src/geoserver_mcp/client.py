@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any
 
+from .adapters.rest import GeoServerRESTAdapter
+
 if TYPE_CHECKING:
     from geo.Geoserver import Geoserver
 
@@ -14,6 +16,11 @@ class GeoServerClient:
 
     def __init__(self, geo_client: Geoserver):
         self._geo = geo_client
+    @property
+    def rest(self) -> GeoServerRESTAdapter:
+        """直接 REST API 适配器（库不支持的方法）。"""
+        return GeoServerRESTAdapter(self)
+
 
     def __getattr__(self, item: str) -> Any:
         return getattr(self._geo, item)
@@ -155,6 +162,7 @@ class GeoServerClient:
         response.raise_for_status()
         return response.json()
 
+
     def generate_map(
         self,
         layers: list[str],
@@ -237,12 +245,3 @@ class GeoServerClient:
             content_type,
         )
 
-
-    def get_featuretype(self, workspace: str, store_name: str, featuretype: str) -> dict[str, Any]:
-        """Get full feature type metadata including SQL view definitions."""
-        response = self.request(
-            "get",
-            f"/rest/workspaces/{workspace}/datastores/{store_name}/featuretypes/{featuretype}.json",
-        )
-        response.raise_for_status()
-        return response.json()

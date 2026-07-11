@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.7] - 2026-07-11
+
+### Added
+
+- New `recalculate_featuretype_bbox` tool: recalculates native and lat/lon bounding boxes for a feature type via direct REST API call (library does not support this).
+
+
 ## [1.0.6] - 2026-07-11
 
 ### Added
