@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.8] - 2026-07-11
+
+### Fixed
+
+- Fix feature type update request for data stores via direct REST API.
+
+
 ## [1.0.7] - 2026-07-11
 
 ### Added
