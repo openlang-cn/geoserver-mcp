@@ -32,6 +32,7 @@ class GeoServerRESTAdapter:
             "put",
             f"/rest/workspaces/{workspace}/datastores/{store_name}/featuretypes/{featuretype}.json"
             "?recalculate=nativebbox,latlonbbox",
+            data="",
         )
         response.raise_for_status()
         return {
