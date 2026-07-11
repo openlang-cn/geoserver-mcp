@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from xml.sax.saxutils import escape as _xml_escape
-
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any
+from xml.sax.saxutils import escape as _xml_escape
 
 from .adapters.rest import GeoServerRESTAdapter
 

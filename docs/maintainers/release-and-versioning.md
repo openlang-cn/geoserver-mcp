@@ -2,7 +2,7 @@
 
 ## Project Version
 
-- Current project version: `1.0.8`
+- Current project version: `1.0.9`
 - PyPI package name: `open-geoserver-mcp`
 - CLI command: `geoserver-mcp`
 

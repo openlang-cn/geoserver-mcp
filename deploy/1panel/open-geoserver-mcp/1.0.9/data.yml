@@ -1,5 +1,22 @@
 additionalProperties:
   formFields:
+    - default: 1.0.9
+      envKey: VERSION
+      labelEn: "Version"
+      labelZh: "版本号"
+      required: true
+      type: text
+      label:
+        en: "Version"
+        es-es: "Versión"
+        ja: "バージョン"
+        ms: "Versi"
+        pt-br: "Versão"
+        ru: "Версия"
+        ko: "버전"
+        zh-Hant: "版本號"
+        zh: "版本号"
+        tr: "Sürüm"
     - default: http://localhost:8080/geoserver
       envKey: GEOSERVER_URL
       labelEn: "GeoServer URL"
@@ -74,6 +91,7 @@ additionalProperties:
         zh: "MCP 传输协议"
         tr: "MCP Transport"
     - default: /mcp
+    - default: /geoserver-mcp
       envKey: MCP_STREAMABLE_HTTP_PATH
       labelEn: "MCP Endpoint Path"
       labelZh: "MCP 端点路径"

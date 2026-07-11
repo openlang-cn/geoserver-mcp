@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.9] - 2026-07-11
+
+### Fixed
+
+- Fix XML escaping: `publish_featurestore_sqlview`, `publish_featurestore`, and `edit_featuretype` now escape user-provided values (SQL, abstract, keywords, CQL filter, etc.) before building XML, preventing XStream parsing errors when values contain `<`, `>`, `&`.
+
+
 ## [1.0.8] - 2026-07-11
 
 ### Fixed

@@ -16,7 +16,7 @@ services:
       MCP_STREAMABLE_HTTP_PATH: "${MCP_STREAMABLE_HTTP_PATH}"
     volumes:
       - ./data:/data
-    command: "sh -c 'pip install uv && uvx --from open-geoserver-mcp==1.0.6 geoserver-mcp --transport ${MCP_TRANSPORT} --host 0.0.0.0 --port 8000 --mount-path / --sse-path /sse --message-path /messages/ --streamable-http-path ${MCP_STREAMABLE_HTTP_PATH}'"
+    command: "sh -c 'pip install uv && uvx --from open-geoserver-mcp==${VERSION} geoserver-mcp --transport ${MCP_TRANSPORT} --host 0.0.0.0 --port 8000 --mount-path / --sse-path /sse --message-path /messages/ --streamable-http-path ${MCP_STREAMABLE_HTTP_PATH}'"
     healthcheck:
       test: "CMD-SHELL python -c \"import socket; socket.create_connection(('127.0.0.1', 8000), 5).close()\""
       interval: 30s
