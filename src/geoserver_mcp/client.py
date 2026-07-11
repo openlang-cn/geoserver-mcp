@@ -236,3 +236,13 @@ class GeoServerClient:
             default_value,
             content_type,
         )
+
+
+    def get_featuretype(self, workspace: str, store_name: str, featuretype: str) -> dict[str, Any]:
+        """Get full feature type metadata including SQL view definitions."""
+        response = self.request(
+            "get",
+            f"/rest/workspaces/{workspace}/datastores/{store_name}/featuretypes/{featuretype}.json",
+        )
+        response.raise_for_status()
+        return response.json()

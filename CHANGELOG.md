@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.6] - 2026-07-11
+
+### Added
+
+- New `get_featuretype` tool: returns full feature type metadata including SQL view definitions, CRS, bounding box, and attributes.
+
+### Fixed
+
+- Fix empty wheel build: sdist was missing source files. Added `force-include` to sdist and wheel hatch configs to properly include Python source files.
+
+
 ## [1.0.7] - 2026-07-11
 
 ### Fixed

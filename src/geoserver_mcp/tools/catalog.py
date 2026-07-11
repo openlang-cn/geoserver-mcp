@@ -310,6 +310,12 @@ def edit_featuretype(workspace: str, store_name: str, featuretype: str, kwargs: 
     )
 
 
+
+def get_featuretype(workspace: str, store_name: str, featuretype: str) -> dict[str, Any]:
+    """获取要素类型完整元数据，包括 SQL 视图定义。"""
+    return require_geoserver().get_featuretype(workspace, store_name, featuretype)
+
+
 def get_featuretypes(workspace: str, store_name: str) -> list[str]:
     """列出要素类型。"""
     return require_geoserver().get_featuretypes(workspace, store_name)
@@ -354,6 +360,7 @@ TOOLS = [
     publish_featurestore,
     publish_featurestore_sqlview,
     edit_featuretype,
+    get_featuretype,
     get_featuretypes,
     get_feature_attribute,
 ]

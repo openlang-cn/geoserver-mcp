@@ -130,6 +130,7 @@ GeoServer resources form a strict hierarchy. Read `references/domain-model.md` f
 | Publish layer | `create_layer` | Requires workspace, layer name, store name, source name |
 | Publish FeatureStore | `publish_featurestore` | Publish a database table/view as layer |
 | Publish SQL view | `publish_featurestore_sqlview` | Custom SQL query as layer |
+| Get feature type detail | `get_featuretype` | Full metadata including SQL view definitions |
 | Get feature types | `get_featuretypes` | List tables/views in a store |
 | Get feature attributes | `get_feature_attribute` | Column names and types |
 | Edit feature type | `edit_featuretype` | Update metadata; `kwargs` as key=value pairs |
