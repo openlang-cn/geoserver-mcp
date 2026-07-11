@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.5] - 2026-07-11
+
+### Fixed
+
+- Fix empty wheel build (second attempt): replaced `packages` with `force-include` in hatch config to properly include Python source files in the wheel.
+
+
 ## [1.0.4] - 2026-07-11
 
 ### Fixed
