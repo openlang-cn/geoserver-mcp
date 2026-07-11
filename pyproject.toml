@@ -10,7 +10,7 @@ build-backend = "hatchling.build"
 # ---------- 项目元数据 ----------
 [project]
 name = "open-geoserver-mcp"
-version = "1.0.6"
+version = "1.0.5"
 description = "A GeoServer MCP server implementation that enhances LLM capabilities with geospatial data and mapping services via GeoServer REST API"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -63,7 +63,7 @@ Changelog = "https://github.com/openlang-cn/geoserver-mcp/blob/main/CHANGELOG.md
 allow-direct-references = true
 
 [tool.hatch.build.targets.sdist]
-force-include = {"src/geoserver_mcp" = "geoserver_mcp"}
+force-include = {"src/geoserver_mcp" = "src/geoserver_mcp"}
 
 [tool.hatch.build.targets.wheel]
 force-include = {"src/geoserver_mcp" = "geoserver_mcp"}

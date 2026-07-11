@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.7] - 2026-07-11
+
+### Fixed
+
+- Fix wheel build: sdist was missing `src/geoserver_mcp/`. Added `force-include` to sdist preserving the path, and to wheel mapping to the package directory.
+
+
 ## [1.0.6] - 2026-07-11
 
 ### Fixed
