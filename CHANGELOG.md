@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.3] - 2026-07-11
+
+### Added
+
+- New `get_featuretype` tool returns full feature type metadata including SQL view definitions, CRS, bounding box, and attributes.
+
+### Changed
+
+- Enable automatic MCP tool discovery for `get_featuretype` in the catalog module.
+
+
 
 ### Added
 

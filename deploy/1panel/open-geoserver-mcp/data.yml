@@ -1,0 +1,36 @@
+name: "GeoServer MCP"
+tags:
+  - MCP
+  - GeoServer
+  - GIS
+title: "GeoServer MCP"
+description: "GeoServer 的 MCP 服务器。将 GeoServer REST API 封装为 MCP 工具，供 Codex、Cursor、Claude Desktop 等 LLM 客户端使用。"
+additionalProperties:
+  key: open-geoserver-mcp
+  name: "GeoServer MCP"
+  tags:
+    - MCP
+    - GeoServer
+    - GIS
+  shortDescZh: "GeoServer MCP 服务器，将 GeoServer REST API 封装为 MCP 工具"
+  shortDescEn: "GeoServer MCP server, wrapping GeoServer REST API into MCP tools"
+  description:
+    en: "MCP server for GeoServer. Wraps the GeoServer REST API into MCP tools for LLM clients such as Codex, Cursor, and Claude Desktop."
+    es-es: "MCP server for GeoServer. Wraps the GeoServer REST API into MCP tools for LLM clients such as Codex, Cursor, and Claude Desktop."
+    ja: "MCP server for GeoServer. Wraps the GeoServer REST API into MCP tools for LLM clients such as Codex, Cursor, and Claude Desktop."
+    ms: "MCP server for GeoServer. Wraps the GeoServer REST API into MCP tools for LLM clients such as Codex, Cursor, and Claude Desktop."
+    pt-br: "MCP server for GeoServer. Wraps the GeoServer REST API into MCP tools for LLM clients such as Codex, Cursor, and Claude Desktop."
+    ru: "MCP server for GeoServer. Wraps the GeoServer REST API into MCP tools for LLM clients such as Codex, Cursor, and Claude Desktop."
+    ko: "MCP server for GeoServer. Wraps the GeoServer REST API into MCP tools for LLM clients such as Codex, Cursor, and Claude Desktop."
+    zh-Hant: "GeoServer 的 MCP 服务器。将 GeoServer REST API 封装为 MCP 工具，供 Codex、Cursor、Claude Desktop 等 LLM 客户端使用。"
+    zh: "GeoServer 的 MCP 服务器。将 GeoServer REST API 封装为 MCP 工具，供 Codex、Cursor、Claude Desktop 等 LLM 客户端使用。"
+    tr: "MCP server for GeoServer. Wraps the GeoServer REST API into MCP tools for LLM clients such as Codex, Cursor, and Claude Desktop."
+  type: tool
+  crossVersionUpdate: true
+  limit: 0
+  architectures:
+    - amd64
+    - arm64
+  website: https://github.com/openlang-cn/geoserver-mcp
+  github: https://github.com/openlang-cn/geoserver-mcp
+  document: https://github.com/openlang-cn/geoserver-mcp/tree/main/docs
