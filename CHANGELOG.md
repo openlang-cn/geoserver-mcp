@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.4] - 2026-07-11
+
+### Fixed
+
+- Fix empty wheel build: `packages = ["src/geoserver_mcp"]` in hatch config caused empty wheel on PyPI. Changed to `sources = ["src"]` so hatch correctly discovers and includes the `geoserver_mcp` package.
+
+
 ## [1.0.3] - 2026-07-11
 
 ### Added

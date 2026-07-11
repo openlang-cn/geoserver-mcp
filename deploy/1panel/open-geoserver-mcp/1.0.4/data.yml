@@ -1,0 +1,110 @@
+additionalProperties:
+  formFields:
+    - default: http://localhost:8080/geoserver
+      envKey: GEOSERVER_URL
+      labelEn: "GeoServer URL"
+      labelZh: "GeoServer 地址"
+      required: true
+      type: text
+      label:
+        en: "GeoServer URL"
+        es-es: "GeoServer URL"
+        ja: "GeoServer URL"
+        ms: "GeoServer URL"
+        pt-br: "GeoServer URL"
+        ru: "GeoServer URL"
+        ko: "GeoServer URL"
+        zh-Hant: "GeoServer 地址"
+        zh: "GeoServer 地址"
+        tr: "GeoServer URL"
+    - default: admin
+      envKey: GEOSERVER_USER
+      labelEn: "GeoServer User"
+      labelZh: "GeoServer 用户名"
+      required: true
+      type: text
+      label:
+        en: "GeoServer User"
+        es-es: "GeoServer User"
+        ja: "GeoServer User"
+        ms: "GeoServer User"
+        pt-br: "GeoServer User"
+        ru: "GeoServer User"
+        ko: "GeoServer User"
+        zh-Hant: "GeoServer 用户名"
+        zh: "GeoServer 用户名"
+        tr: "GeoServer User"
+    - default: geoserver
+      envKey: GEOSERVER_PASSWORD
+      labelEn: "GeoServer Password"
+      labelZh: "GeoServer 密码"
+      required: true
+      type: password
+      label:
+        en: "GeoServer Password"
+        es-es: "GeoServer Password"
+        ja: "GeoServer Password"
+        ms: "GeoServer Password"
+        pt-br: "GeoServer Password"
+        ru: "GeoServer Password"
+        ko: "GeoServer Password"
+        zh-Hant: "GeoServer 密码"
+        zh: "GeoServer 密码"
+        tr: "GeoServer Password"
+    - default: streamable-http
+      envKey: MCP_TRANSPORT
+      labelEn: "MCP Transport"
+      labelZh: "MCP 传输协议"
+      required: false
+      type: select
+      values:
+        - label: "Streamable HTTP"
+          value: streamable-http
+        - label: SSE
+          value: sse
+      label:
+        en: "MCP Transport"
+        es-es: "MCP Transport"
+        ja: "MCP Transport"
+        ms: "MCP Transport"
+        pt-br: "MCP Transport"
+        ru: "MCP Transport"
+        ko: "MCP Transport"
+        zh-Hant: "MCP 传输协议"
+        zh: "MCP 传输协议"
+        tr: "MCP Transport"
+    - default: /mcp
+      envKey: MCP_STREAMABLE_HTTP_PATH
+      labelEn: "MCP Endpoint Path"
+      labelZh: "MCP 端点路径"
+      required: false
+      type: text
+      label:
+        en: "MCP Endpoint Path"
+        es-es: "MCP Endpoint Path"
+        ja: "MCP Endpoint Path"
+        ms: "MCP Endpoint Path"
+        pt-br: "MCP Endpoint Path"
+        ru: "MCP Endpoint Path"
+        ko: "MCP Endpoint Path"
+        zh-Hant: "MCP 端点路径"
+        zh: "MCP 端点路径"
+        tr: "MCP Endpoint Path"
+    - default: 8000
+      envKey: PANEL_APP_PORT_HTTP
+      labelEn: Port
+      labelZh: "端口"
+      label:
+        en: Port
+        es-es: Puerto
+        ja: "ポート"
+        ms: Port
+        pt-br: Porta
+        ru: "Порт"
+        ko: "포트"
+        zh-Hant: "埠"
+        zh: "端口"
+        tr: "Bağlantı Noktası"
+      required: true
+      rule: paramPort
+      type: number
