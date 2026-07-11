@@ -89,7 +89,8 @@ def create_layer(
 
 
 def delete_resource(
-    resource_type: Annotated[str, Field(description="资源类型：workspace、layer、datastore、style、coverage、featurestore")],
+    resource_type: Annotated[str, Field(description="资源类型：workspace、layer、datastore、style、"
+    "coverage、featurestore")],
     workspace: Annotated[str, Field(description="资源所在工作区名称")],
     name: Annotated[str, Field(description="要删除的资源名称")],
 ) -> dict[str, Any]:
@@ -135,10 +136,12 @@ def query_features(
 def generate_map(
     layers: Annotated[list[str], Field(description='图层名称列表，如 ["demo:roads"]')],
     styles: Annotated[list[str] | None, Field(description="样式名称列表，与 layers 一一对应")] = None,
-    bbox: Annotated[list[float] | None, Field(description="边界框 [minx, miny, maxx, maxy]，默认 [-180, -90, 180, 90]")] = None,
+    bbox: Annotated[list[float] | None, Field(description="边界框 [minx, miny, maxx, maxy]，"
+    "默认 [-180, -90, 180, 90]")] = None,
     width: Annotated[int, Field(description="地图宽度(像素)，默认 1024")] = 1024,
     height: Annotated[int, Field(description="地图高度(像素)，默认 768")] = 768,
-    format: Annotated[str, Field(description="输出格式，如 image/png、image/jpeg，默认 image/png")] = "image/png",
+    format: Annotated[str, Field(description="输出格式，如 image/png、image/jpeg，"
+    "默认 image/png")] = "image/png",
 ) -> dict:
     """生成 WMS 地图访问参数。"""
     return require_geoserver().generate_map(layers, styles, bbox, width, height, format)
@@ -296,7 +299,8 @@ def add_layer_to_layergroup(
     layer_name: Annotated[str, Field(description="要添加的图层名称")],
     layer_workspace: Annotated[str, Field(description="要添加的图层所在工作区")],
     layergroup_name: Annotated[str, Field(description="目标图层组名称")],
-    layergroup_workspace: Annotated[str | None, Field(description="目标图层组所在工作区，默认与 layer_workspace 相同")] = None,
+    layergroup_workspace: Annotated[str | None, Field(description="目标图层组所在工作区，默认与 "
+    "layer_workspace 相同")] = None,
 ) -> None:
     """向图层组添加图层。"""
     return require_geoserver().add_layer_to_layergroup(
@@ -311,7 +315,8 @@ def remove_layer_from_layergroup(
     layer_name: Annotated[str, Field(description="要移除的图层名称")],
     layer_workspace: Annotated[str, Field(description="要移除的图层所在工作区")],
     layergroup_name: Annotated[str, Field(description="目标图层组名称")],
-    layergroup_workspace: Annotated[str | None, Field(description="目标图层组所在工作区，默认与 layer_workspace 相同")] = None,
+    layergroup_workspace: Annotated[str | None, Field(description="目标图层组所在工作区，默认与 "
+    "layer_workspace 相同")] = None,
 ) -> None:
     """从图层组移除图层。"""
     return require_geoserver().remove_layer_from_layergroup(

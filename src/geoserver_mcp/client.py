@@ -246,7 +246,11 @@ class GeoServerClient:
             workspace=workspace,
             title=_xml_escape(params.get("title")) if params.get("title") is not None else None,
             advertised=params.get("advertised", True),
-            abstract=_xml_escape(params.get("abstract")) if params.get("abstract") is not None else None,
+            abstract=(
+                _xml_escape(params.get("abstract"))
+                if params.get("abstract") is not None
+                else None
+            ),
             keywords=keywords,
             cqlfilter=cqlfilter,
         )
