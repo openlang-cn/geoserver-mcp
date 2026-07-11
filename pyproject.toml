@@ -64,9 +64,11 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.sdist]
 sources = ["src"]
+packages = ["src/geoserver_mcp"]
 
 [tool.hatch.build.targets.wheel]
 sources = ["src"]
+packages = ["src/geoserver_mcp"]
 
 # ---------- pytest 配置 ----------
 [tool.pytest.ini_options]
