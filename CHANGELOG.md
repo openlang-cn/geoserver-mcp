@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.6] - 2026-07-11
+
+### Fixed
+
+- Fix wheel build: `force-include` on sdist caused duplicate file paths, breaking wheel build from sdist. Removed `force-include` from sdist, kept only for wheel.
+
+
 ## [1.0.5] - 2026-07-11
 
 ### Fixed
