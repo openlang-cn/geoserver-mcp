@@ -306,7 +306,10 @@ def create_coveragestore(
     ],
     params: Annotated[
         dict,
-        Field(description="栅格参数，需包含 path(文件路径)；可选 file_type(默认 GeoTIFF)、layer_name")
+        Field(description=(
+            "栅格参数，需包含 path(文件路径)；"
+            "可选 file_type(默认 GeoTIFF)、layer_name"
+        ))
     ],
 ) -> dict:
     """创建栅格存储。"""
@@ -595,7 +598,10 @@ def publish_featurestore(
     ],
     params: Annotated[
         dict,
-        Field(description="图层元数据，必须包含 table(表名)；可选 title、advertised、abstract、keywords、cqlfilter")
+        Field(description=(
+            "图层元数据，必须包含 table(表名)；"
+            "可选 title、advertised、abstract、keywords、cqlfilter"
+        ))
     ],
 ) -> int:
     """将要素存储发布为图层。"""
