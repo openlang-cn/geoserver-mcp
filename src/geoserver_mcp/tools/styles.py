@@ -372,7 +372,7 @@ def style_coverage_style_xml(
         Field(description="最大值")
     ],
     number_of_classes: Annotated[
-        str,
+        int | None,
         Field(description="分级数")
     ],
     opacity: Annotated[
