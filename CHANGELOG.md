@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+## [1.0.10] - 2026-07-12
+
+### Added
+- 为所有 MCP 工具参数添加 `Annotated[type, Field(description="...")]` 类型注解和中文描述
+
+### Changed
+- 将 `Annotated` 类型注解改为多行格式以符合 ruff E501 行长度限制
+
+### Fixed
+- 修复 `publish_featurestore` 中 `title`/`abstract` 空字符串被错误转为 `None` 的问题
+- 修复 `create_featurestore`/`create_datastore`/`create_coveragestyle` 参数描述与官方库不一致
+
 ## [1.0.9] - 2026-07-11
 
 ### Fixed

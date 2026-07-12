@@ -10,7 +10,7 @@ build-backend = "hatchling.build"
 # ---------- 项目元数据 ----------
 [project]
 name = "open-geoserver-mcp"
-version = "1.0.9"
+version = "1.0.10"
 description = "A GeoServer MCP server implementation that enhances LLM capabilities with geospatial data and mapping services via GeoServer REST API"
 readme = "README.md"
 requires-python = ">=3.10"
