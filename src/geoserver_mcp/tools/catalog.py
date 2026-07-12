@@ -673,22 +673,6 @@ def edit_featuretype(
     )
 
 
-def recalculate_featuretype_bbox(
-    workspace: Annotated[
-        str,
-        Field(description="工作区名称")
-    ],
-    store_name: Annotated[
-        str,
-        Field(description="要素存储名称")
-    ],
-    featuretype: Annotated[
-        str,
-        Field(description="要素类型名称")
-    ],
-) -> dict[str, Any]:
-    """"重新计算要素类型的原生和经纬度边界框。"""
-    return require_geoserver().rest.recalculate_featuretype_bbox(workspace, store_name, featuretype)
 
 
 def get_featuretype(
@@ -775,7 +759,6 @@ TOOLS = [
     publish_featurestore,
     publish_featurestore_sqlview,
     edit_featuretype,
-    recalculate_featuretype_bbox,
     get_featuretype,
     get_featuretypes,
     get_feature_attribute,

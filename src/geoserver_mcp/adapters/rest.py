@@ -24,19 +24,3 @@ class GeoServerRESTAdapter:
         response.raise_for_status()
         return response.json()
 
-    def recalculate_featuretype_bbox(
-        self, workspace: str, store_name: str, featuretype: str
-    ) -> dict[str, Any]:
-        """重新计算要素类型的原生和经纬度边界框。"""
-        response = self._client.request(
-            "put",
-            f"/rest/workspaces/{workspace}/datastores/{store_name}/featuretypes/{featuretype}.json"
-            "?recalculate=nativebbox,latlonbbox",
-            data="",
-        )
-        response.raise_for_status()
-        return {
-            "status": "success",
-            "featuretype": featuretype,
-            "message": "Bounding boxes recalculated.",
-        }

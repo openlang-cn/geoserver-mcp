@@ -135,7 +135,6 @@ GeoServer resources form a strict hierarchy. Read `references/domain-model.md` f
 | Get feature type detail | `get_featuretype` | Full metadata including SQL view definitions |
 | Get feature types | `get_featuretypes` | List tables/views in a store |
 | Get feature attributes | `get_feature_attribute` | Column names and types |
-| Recalculate bbox | `recalculate_featuretype_bbox` | Recalculate native and lat/lon bounding boxes |
 | Edit feature type | `edit_featuretype` | Update metadata; `kwargs` as key=value pairs |
 | Query features | `query_features` | WFS query with optional CQL filter |
 | Generate map | `generate_map` | WMS map with bbox, layers, styles, format |
@@ -214,7 +213,7 @@ GeoServer resources form a strict hierarchy. Read `references/domain-model.md` f
 ```
 
 
-### Publish a SQL View Layer with Bounding Box
+### Publish a SQL View Layer
 
 `
 1. list_workspaces() -- discover or plan workspace name
@@ -223,8 +222,7 @@ GeoServer resources form a strict hierarchy. Read `references/domain-model.md` f
      "name": "my_view", "sql": "select ...", "geom_name": "geom",
      "geom_type": "Point", "srid": 4326, "key_column": "id"
    }, []) -- create the SQL view layer
-4. recalculate_featuretype_bbox("myworkspace", "pgstore", "my_view") -- mandatory: new SQL views have empty bounding boxes
-5. list_layers("myworkspace") -- verify the layer appears
+4. list_layers("myworkspace") -- verify the layer appears
 `
 ### Publish a GeoTIFF as a Raster Layer
 

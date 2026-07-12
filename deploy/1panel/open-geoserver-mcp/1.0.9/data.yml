@@ -1,6 +1,6 @@
 additionalProperties:
   formFields:
-    - default: 1.0.9
+    - default: 1.0.11
       envKey: VERSION
       labelEn: "Version"
       labelZh: "版本号"

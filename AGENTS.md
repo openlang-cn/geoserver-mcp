@@ -4,7 +4,7 @@
 本仓库是一个基于 Python 的 GeoServer MCP 服务，整体结构较小，核心逻辑集中。
 
 - `src/geoserver_mcp/main.py`：服务入口，定义绝大多数 MCP 工具。
-- `src/geoserver_mcp/adapters/rest.py`：直接 REST API 适配器，集中管理 `geoserver-rest` 库不支持的方法（如 `get_featuretype`、`recalculate_featuretype_bbox`）。
+- `src/geoserver_mcp/adapters/rest.py`：直接 REST API 适配器，集中管理 `geoserver-rest` 库不支持的方法（如 `get_featuretype`）。
 - `src/geoserver_mcp/__init__.py`：包初始化文件。
 - `examples/client.py`：最小客户端调用示例。
 - `docs/`：详细文档目录，按 `getting-started/`、`deployment/`、`mcp/`、`development/`、`maintainers/`、`internal/` 分类存放；图片与演示资源也保留在此目录。

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on Keep a Changelog, and this project uses semantic versioning for published releases.
 
 ## [Unreleased]
+
+## [1.0.11] - 2026-07-12
+
+### Removed
+- Removed `recalculate_featuretype_bbox` tool (no longer needed)
+
 ## [1.0.10] - 2026-07-12
 
 ### Added
